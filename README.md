@@ -1,159 +1,101 @@
-> **繁中臺北版：`0.2.0-rc.56-tw-radio`** — 本 fork 加入繁體中文介面、彩色首頁頭像與 10 個臺北／北部固定電臺。使用與建置方式請見 [繁體中文說明](README.zh-TW.md)。以下保留原作者的專案介紹。
+# Passport OS 繁中臺北版
 
-<div align="center">
+讓 FoloToy AI Passport 顯示繁體中文、保留彩色頭像，並直接收聽十個臺北與臺灣電臺。
 
-# Passport OS
+**版本：`0.2.0-rc.56-tw-radio`** · [English](docs/README.en.md) · [文件目錄](docs/index.md) · [版本紀錄](CHANGELOG.md)
 
-**把一块小硬件，折腾成每天会用的小玩意。**
+本專案是 [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) 的衍生版本，以 `0.2.0-rc.56` 為基礎。適用硬體為 **FoloToy AI Passport、ESP32-C3、8 MB Flash**；其他外觀相似的 ESP32 板子不能直接套用。
 
-FoloToy AI Passport 社区固件 · ESP32-C3 · 8 MB Flash · 10 款功能与应用
+![實機收音機畫面：固定清單共 10 臺](docs/images/taipei-radio.png)
 
-**简体中文** · [English](docs/README.en.md)
+## 從這裡開始
 
-[看看能玩什么](#十款应用装进口袋) · [安装固件](#先用起来) · [自己改一版](#把它改成你的版本) · [关联项目](#两个老朋友)
-
-</div>
-
----
-
-## 从自己想用开始
-
-首先，感谢大家对这个项目的喜欢和支持。收到这么多反馈，让这件原本只为自己做的小事，多了很多继续折腾的理由。
-
-制作 Passport OS 的初衷很简单：把这块硬件变成一个我自己会经常使用的“小玩意”。经过一轮轮尝试和筛选，我留下了日常用得上的 10 款功能与应用：能聊两句、听听电台、帮忙输入，也能计个时、玩一局。
-
-大家提出了不少有意思的个性化需求。每个人的使用习惯不同，与其把所有想法都塞进同一个固件，不如把项目开放出来，让大家自己动手：增加喜欢的功能，删掉用不上的部分，做一个更适合自己的版本。
-
-> 希望它既能成为你日常用得上的工具，也能成为值得折腾的小玩具。大家玩得开心！
-
-## 十款应用，装进口袋
-
-| 应用 | 可以做什么 | 使用条件 |
-| --- | --- | --- |
-| 首页 | 时钟、个人资料、头像与名片、天气和空气质量 | 天气与空气质量需要联网 |
-| 收音机 | 选择城市和电台，听广播，设置睡眠计时 | Wi-Fi 与可用的网络电台 |
-| AI 随身语音 | 把设备当成电脑的语音输入工具，联动快捷键 | Windows 配套程序 |
-| 小智 AI | 通过麦克风和扬声器进行语音对话 | 网络与小智服务配置 |
-| Muse | 语音发送给 Muse，在屏幕上阅读回复 | 手机配对、自己的账号与可用网络 |
-| 你在狗叫什么 | 用声音参与一局小游戏 | 可离线使用 |
-| 声音跳一跳 | 长声跳远、短声跳近，停声就跳 | 可离线使用 |
-| 俄罗斯方块 | 熟悉的堆叠、消行，再来一局 | 可离线使用 |
-| 秒表 | 计时、分段、暂停与继续 | 可离线使用 |
-| 番茄钟 | 专注、休息和到时提醒 | 可离线使用 |
-
-应用之外，还包含主题、音量、亮度、自动熄屏、短按唤醒、Wi-Fi 配网、电池显示与功耗管理等整机功能。
-
-## 两个老朋友
-
-此前单独开源的 Muse 和 AI 随身语音，也有各自的源码、教程和配套内容：
-
-| 项目 | 地址 | 内容 |
-| --- | --- | --- |
-| Muse | [ai-passport-muse](https://github.com/manchunx7-bit/ai-passport-muse) | Muse 应用模块源码与使用教程 |
-| AI 随身语音 | [folo-ai-passport-voice](https://github.com/manchunx7-bit/folo-ai-passport-voice) | 随身语音源码、Windows 电脑端程序与使用教程 |
-
-## 先用起来
-
-**只想使用现有功能，不需要安装 AI 工具或编译环境。** 有对应版本的发布包时，从 [GitHub Releases](https://github.com/manchunx7-bit/passport-os/releases) 下载固件即可。想修改功能，再看下方的源码构建流程。
-
-适用硬件：**相同硬件版本的 FoloToy AI Passport，ESP32-C3、8 MB Flash**。外观相似的其他开发板不能直接套用。
-
-| 你的情况 | 选择镜像 | 烧录地址 |
-| --- | --- | --- |
-| 首次安装，或重新体验完整配网流程 | `*-full.bin` 完整镜像 | `0x0` |
-| 已安装 Passport OS，且确认分区布局一致 | `*-app.bin` 应用镜像 | `0x10000` |
-
-> **先分清完整安装和普通升级。** 完整镜像会覆盖写入范围内的配置；彻底重置还需要擦除 Flash。想保留配网、资料和图片时，先备份并确认分区布局一致，再使用应用镜像，不能先擦除整片 Flash。
-
-详细的文件选择、Windows 烧录命令与常见问题，见 [社区安装说明](docs/open-source-guide-draft-20261025.md)。
-
-<details>
-<summary><strong>首次开机，怎么连接手机？</strong></summary>
-
-1. 手机连接设备发出的 `Passport-WiFi-xxxx` 热点，无需密码。
-2. 在浏览器打开 `http://192.168.4.1`。
-3. 按页面提示选择 Wi-Fi、设置城市和个人资料；头像与名片按需添加。
-4. 完成设置后返回首页，开始使用。
-
-小智和 Muse 需要使用者自己的服务配置；Muse 使用代理时，填写代理主机的局域网 IP 和 HTTP 端口。AI 随身语音还需要运行上方关联项目中的 Windows 程序。
-
-</details>
-
-## 把它改成你的版本
-
-**这个仓库包含整机固件源码。** 你可以从现有功能出发，改界面、改交互、增删应用，再编译并烧录到匹配的硬件上。
-
-**下载源码 → 修改功能 → 编译固件 → 烧录设备 → 真机试一试。**
-
-### 从哪里动手
-
-| 想改什么 | 先看这里 |
+| 你的目的 | 對應文件 |
 | --- | --- |
-| 某个应用的界面或逻辑 | [`main/apps/`](main/apps/) |
-| 应用入口、切换、设置与系统交互 | [`main/launcher/`](main/launcher/) |
-| 通用界面与字体资源 | [`main/ui/`](main/ui/) · [`main/fonts/`](main/fonts/) |
-| 按键、显示、音频、电池等板级驱动 | [`components/bsp/`](components/bsp/) |
-| Wi-Fi 配网与连接管理 | [`components/esp-wifi-connect/`](components/esp-wifi-connect/) |
-| Muse 接入与协议适配 | [`components/passport_muse/`](components/passport_muse/) |
-| 主机测试与构建工具 | [`tests/`](tests/) · [`tools/`](tools/) |
+| 裝置已裝好，想知道怎麼用 | [日常操作與功能](docs/USAGE.zh-TW.md) |
+| 想安裝、升級或回復舊版 | [備份、建置與燒錄](docs/INSTALL.zh-TW.md) |
+| 想換彩色頭像、改簽名或名片 | [個人資料與彩色頭像](docs/USAGE.zh-TW.md#個人資料彩色頭像與名片) |
+| 電臺沒聲音、連不上網或頭像仍是單色 | [疑難排解](docs/TROUBLESHOOTING.zh-TW.md) |
+| 想修改程式、電臺或字型 | [開發與驗證](docs/DEVELOPMENT.zh-TW.md) |
 
-### 编译第一版
+目前這個版本以原始碼發布，**GitHub 的 Source code ZIP 不是可燒錄的韌體**。需要自行建置，或使用與本版本、硬體及分割區相符的已建置鏡像。從上游下載其他版本的二進位檔，不會自動包含本 fork 的修改。
 
-准备 **Git、ESP-IDF 5.5.3** 及其配套工具链。Windows 用户可以在 WSL 中构建，再从 Windows 串口烧录。
+## 這版新增的功能
+
+| 功能 | 實際行為 |
+| --- | --- |
+| 繁體中文介面 | 系統選單、應用程式與手機設定頁使用繁體中文，保留產品名稱與通訊識別字 |
+| 繁中顯示與字型 | 思源黑體 TC 字型子集；動態中文以顯示副本轉換，不改寫原始資料 |
+| 彩色首頁頭像 | 96 × 138 像素，最多 255 種照片色彩加透明背景；仍能讀取舊單色頭像 |
+| 固定臺北電臺清單 | 十臺內建清單，不會被自動城市搜尋覆蓋 |
+| HLS 電臺相容性 | 支援這份清單的純音訊 HLS；音訊變體上限為 384 kbit/s |
+| 可重現的資源工具 | 固定字型轉換器版本、驗證原字型 SHA256，附第三方授權與功能測試 |
+
+既有首頁、天氣、名片、收音機、隨身語音、小智 AI、Muse、遊戲、碼錶、番茄鐘與系統設定沿用上游功能。網路與帳號需求見[功能對照表](docs/USAGE.zh-TW.md#功能與使用條件)。
+
+## 收音機內建哪十臺
+
+| 序號 | 電臺 | 串流 |
+| --- | --- | --- |
+| 1 | ICRT | AAC 直連 |
+| 2 | 中廣新聞網 | AAC 直連 |
+| 3 | 中廣流行網 | AAC 直連 |
+| 4 | 中廣音樂網 | AAC 直連 |
+| 5 | 九八新聞台 | AAC 直連 |
+| 6 | 飛碟電台 | AAC 直連 |
+| 7 | 臺北健康電臺 | MP3 直連 |
+| 8 | 臺北廣播電臺 | HLS／AAC |
+| 9 | 警廣臺北臺 | HLS／AAC |
+| 10 | 警廣全國網 | HLS／AAC |
+
+短按上鍵切下一臺，短按下鍵切上一臺，短按確定播放／暫停，長按確定返回應用程式選單。電臺網址定義在 [radio_presets.h](main/apps/radio/radio_presets.h)，來源仍可能變更，詳見[電臺維護方式](docs/DEVELOPMENT.zh-TW.md#修改電臺清單)。
+
+## 已裝好這版的裝置
+
+1. 開機後短按確定，開啟應用程式選單。
+2. 用上下鍵選擇「城市收音機」，短按確定開啟。
+3. 裝置連上已儲存的 Wi-Fi 後開始播放；上下鍵換臺，確定鍵暫停。
+4. 要更換頭像或資料，在首頁長按下鍵進入「手機設定」。
+
+手機設定時，連接裝置畫面顯示的 `Passport-WiFi-…` 熱點，瀏覽器開啟 `http://192.168.4.1`。日常網路電臺及 AI 功能使用的是已設定的路由器 Wi-Fi，不是這個設定熱點。
+
+彩色頭像必須重新上傳原始彩色照片，並選擇「彩色」模式；舊單色頭像沒有保留原始 RGB 資料，切換主題無法還原照片顏色。
+
+## 開發者快速建置
+
+使用 **ESP-IDF 5.5.3** 與 ESP32-C3 工具鏈；首次安裝 SDK 的方式與平台限制見[安裝文件](docs/INSTALL.zh-TW.md)。
 
 ```bash
-git clone https://github.com/manchunx7-bit/passport-os.git
+git clone https://github.com/lunkerchen/passport-os.git
 cd passport-os
-bash build.sh release
+IDF_DIR=/path/to/esp-idf bash build.sh release
 ```
 
-构建脚本默认从 `/opt/esp-idf` 加载环境。如果安装在其他目录，通过 `IDF_DIR` 指定路径，例如：
+把 `/path/to/esp-idf` 換成 ESP-IDF 5.5.3 的實際安裝目錄。產物：
 
-```bash
-IDF_DIR="$HOME/esp/esp-idf" bash build.sh release
-```
+- `build-public/passport-os.bin`：應用程式鏡像；相同分割區配置的升級寫入 `0x10000`。
+- `build-public/FoloToy-AI-Passport-full.bin`：完整安裝鏡像；寫入 `0x0`。
 
-第三方组件由 ESP-IDF Component Manager 根据依赖文件获取。构建后得到：
+**先備份並核對分割區，再選擇鏡像。** 完整鏡像會覆蓋其寫入範圍內的設定；整片清除也會清掉個人資料。一般升級不要直接套用完整安裝指令。完整步驟見[安裝與回復指南](docs/INSTALL.zh-TW.md)。
 
-| 文件 | 用途 |
-| --- | --- |
-| `build-public/FoloToy-AI-Passport-full.bin` | 完整镜像，写入 `0x0` |
-| `build-public/passport-os.bin` | 应用镜像；相同分区布局的升级写入 `0x10000` |
+## 驗證到哪裡
 
-### 改完，先检查
+本版本已在實際 ESP32-C3 上確認十個電臺解碼產生 PCM 並送入裝置音訊輸出，彩色頭像也以實機截圖的 RGB 色塊驗證。功能測試涵蓋繁中顯示、頭像格式相容與原子儲存、上傳錯誤處理、記憶體釋放及 HLS 解析／傳輸。
 
-在已激活 ESP-IDF 5.5.3 的环境中执行：
+- [可追溯的版本驗證摘要](docs/verification-tw-radio.json)
+- [測試指令與已知限制](docs/DEVELOPMENT.zh-TW.md#執行測試)
 
-```bash
-./tools/validate.sh --static
-./tools/validate.sh --firmware
-```
+這些紀錄不等同人耳音質評測、不保證外部電臺永久可用，也不代表所有語音服務已完成帳號設定。字型為子集，不能宣稱任意 Unicode 都有字形。完整上游主機測試在 macOS 有既有相容性限制，文件僅列出實際通過的檢查。
 
-第二条命令会重新构建并校验完整镜像，输出到 `build/FoloToy-AI-Passport-full.bin`。编译通过之后，仍需在设备上检查按键、显示、音频、配网及改动涉及的功能。
+## 資料、授權與來源
 
-<details>
-<summary><strong>准备分享自己的固件包？</strong></summary>
+韌體中的 Wi-Fi、個人資料、照片與服務憑證由使用者在自己的裝置上設定。Git 僅保留原始碼、測試及不含個人資料的驗證摘要；完整 Flash 備份及原始裝置日誌不適合公開上傳。
 
-本地打包工具可以附带源码快照、manifest 和 SHA256 校验清单：
+- 原作：[manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os)
+- 原作者的隨身語音電腦端：[folo-ai-passport-voice](https://github.com/manchunx7-bit/folo-ai-passport-voice)
+- 原作者的 Muse 專案：[ai-passport-muse](https://github.com/manchunx7-bit/ai-passport-muse)
+- 專案授權：[MIT](LICENSE)
+- 字型與轉換資料：[第三方資源與授權](docs/THIRD-PARTY-zh-TW.md)
+- Muse 圖像：[Jollybot 使用聲明](main/apps/muse/JOLLYBOT-NOTICE.md)
 
-```bash
-python3 tools/package_firmware.py --date YYYY-MM-DD --verification /path/to/verification-public.json
-```
-
-日期和验收文件路径需要替换为实际值。验收记录必须对应当前固件版本，且不包含私人数据。打包工具不会自动发布 GitHub Release；源码变更后要重新构建、验证，不能沿用旧版本的验证结果。
-
-</details>
-
-## 分享代码，保留自己的钥匙
-
-发布构建会启用 `PASSPORT_PUBLIC_RELEASE=ON`，清空默认代理配置。每位使用者在自己的设备上填写 Wi-Fi、账号和服务凭据。
-
-提交代码、Issue 或自己的改版时，请勿附上密码、API Token、设备配置导出、私人日志或个人图片。提交问题时，写明固件版本、硬件型号、复现步骤和是否保留了旧数据，会更容易定位。
-
-## 许可与致谢
-
-项目主体采用 [MIT 许可证](LICENSE)。Muse、Noise 协议和其他第三方内容遵循各自目录中的 `LICENSE`、`NOTICE` 及资源说明；Jollybot 形象的使用边界见 [单独声明](main/apps/muse/JOLLYBOT-NOTICE.md)。
-
-感谢 FoloToy 的硬件与上游项目，也感谢所有分享想法、反馈问题和参与改进的朋友。
-
-**从一个自己想用的小玩意开始，接下来，欢迎把它改成你的样子。**
+原作者及各第三方資源的著作權與授權維持不變。舊版技術報告保留供追溯，與本版行為不同時，以這份 README、本版操作指南及目前程式碼為準。
