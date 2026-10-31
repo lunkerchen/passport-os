@@ -2,7 +2,7 @@
 
 讓 FoloToy AI Passport 顯示繁體中文、保留彩色頭像，並直接收聽十個臺北與臺灣電臺。
 
-**版本：`0.2.0-rc.56-tw-scroll`** · [English](docs/README.en.md) · [文件目錄](docs/index.md) · [版本紀錄](CHANGELOG.md)
+**版本：`0.2.0-rc.56-tw-best989`** · [English](docs/README.en.md) · [文件目錄](docs/index.md) · [版本紀錄](CHANGELOG.md)
 
 本專案是 [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) 的衍生版本，以 `0.2.0-rc.56` 為基礎。適用硬體為 **FoloToy AI Passport、ESP32-C3、8 MB Flash**；其他外觀相似的 ESP32 板子不能直接套用。
 
@@ -39,7 +39,7 @@
 | 序號 | 電臺 | 串流 |
 | --- | --- | --- |
 | 1 | ICRT | AAC 直連 |
-| 2 | 中廣新聞網 | AAC 直連 |
+| 2 | 好事989 BEST RADIO | AAC 直連 |
 | 3 | 中廣流行網 | AAC 直連 |
 | 4 | 中廣音樂網 | AAC 直連 |
 | 5 | 九八新聞台 | AAC 直連 |
@@ -83,7 +83,8 @@ IDF_DIR=/path/to/esp-idf bash build.sh release
 
 前一版已在實際 ESP32-C3 上確認十個電臺解碼產生 PCM 並送入裝置音訊輸出，彩色頭像亦經實機 RGB 色塊驗證。單色／彩色切換已通過主機、瀏覽器及實機測試，確認重新開機後保留選擇與原始色彩。本版另以不同時間的實機截圖確認長簽名會捲動、短簽名保持靜止，並完成首頁重入、記憶體與個人資料保留檢查。
 
-- [本版簽名跑馬燈驗證](docs/verification-tw-scroll.json)
+- [本版好事989替換驗證](docs/verification-tw-best989.json)
+- [簽名跑馬燈驗證](docs/verification-tw-scroll.json)
 - [單色／彩色切換驗證](docs/verification-tw-portrait.json)
 - [前版實機驗證紀錄](docs/verification-tw-radio.json)
 - [測試指令與已知限制](docs/DEVELOPMENT.zh-TW.md#執行測試)

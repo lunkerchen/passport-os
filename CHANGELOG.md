@@ -2,6 +2,12 @@
 
 本檔記錄 [lunkerchen/passport-os](https://github.com/lunkerchen/passport-os) 衍生版本。上游版本背景見 [rc.56 說明](docs/release-rc56.md)，實際使用方式見 [README](README.md)。
 
+## 0.2.0-rc.56-tw-best989
+
+- 將第 2 臺「中廣新聞網」替換為「好事989 BEST RADIO」，使用臺北人人廣播電臺的 AAC 直連串流，刻度設定為 FM 98.9。
+- 其餘九臺清單完全保留，沒有改動頭像模式或簽名跑馬燈。
+- 建置、大小／SRAM 預算與電臺欄位檢查通過；實機播放結果見[本版摘要](docs/verification-tw-best989.json)。
+
 ## 0.2.0-rc.56-tw-scroll
 
 - 首頁「想說的話／個性簽名」超出欄位寬度時，改用橫向循環跑馬燈顯示完整內容；短文字維持靜止。

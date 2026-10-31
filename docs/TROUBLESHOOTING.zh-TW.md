@@ -2,7 +2,7 @@
 
 [文件目錄](index.md) · [安裝與升級](INSTALL.zh-TW.md) · [日常操作](USAGE.zh-TW.md)
 
-先確認使用的是本 fork 的 `0.2.0-rc.56-tw-scroll`。原作者的其他版本、Source code ZIP，以及電腦端的語音程式，是不同檔案與用途。
+先確認使用的是本 fork 的 `0.2.0-rc.56-tw-best989`。原作者的其他版本、Source code ZIP，以及電腦端的語音程式，是不同檔案與用途。
 
 ## USB 與燒錄
 

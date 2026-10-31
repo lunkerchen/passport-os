@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0-rc.56-tw-best989",
+  "base_version": "0.2.0-rc.56-tw-scroll",
+  "deployed_image": {
+    "bytes": 4102800,
+    "sha256": "6163be5516304416513d35951319d62d393e7c0ef31f792710ee59ea8a4f7a83",
+    "flash_offset": "0x10000"
+  },
+  "replacement": {
+    "position": 2,
+    "old_name": "中廣新聞網",
+    "name": "好事989 BEST RADIO",
+    "stream_url": "https://stream.rcs.revma.com/fkdywbc59duvv",
+    "frequency_mhz": 98.9,
+    "directory_reference": "https://de1.api.radio-browser.info/json/stations/search?name=%E4%BA%BA%E4%BA%BA&countrycode=TW&hidebroken=true"
+  },
+  "checks": {
+    "public_build": "PASS",
+    "size_and_sram_budget": "PASS",
+    "partition_table_unchanged": true,
+    "app_flash_readback_hash": "PASS",
+    "other_nine_presets_identical": true,
+    "name_and_description_font_coverage": "PASS",
+    "actual_device_decode": {
+      "status": "decoded on ESP32",
+      "sample_rate": 48000,
+      "channels": 2
+    },
+    "playback_observation_seconds": 15,
+    "stream_refills_during_observation": 0,
+    "heap_integrity": "PASS",
+    "runtime_faults": 0
+  },
+  "screenshot": "images/taipei-radio.png",
+  "limitations": [
+    "Playback verification confirms decoding/PCM output, not a human listening assessment.",
+    "The remaining nine presets are byte-for-byte unchanged; this record does not claim a new playback test of all ten."
+  ]
+}

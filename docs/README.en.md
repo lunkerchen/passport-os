@@ -2,7 +2,7 @@
 
 [繁體中文](../README.md) · [Documentation index](index.md) · [Changelog](../CHANGELOG.md)
 
-Community firmware for the **FoloToy AI Passport, ESP32-C3, 8 MB Flash**, based on [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) `0.2.0-rc.56`. This fork's firmware version is **`0.2.0-rc.56-tw-scroll`**.
+Community firmware for the **FoloToy AI Passport, ESP32-C3, 8 MB Flash**, based on [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) `0.2.0-rc.56`. This fork's firmware version is **`0.2.0-rc.56-tw-best989`**.
 
 ## What this fork adds
 
@@ -33,7 +33,7 @@ This fork is currently distributed as source. A GitHub Source code ZIP is **not*
 ## Radio presets
 
 1. ICRT
-2. BCC News / 中廣新聞網
+2. BEST RADIO 98.9 / 好事989
 3. BCC Pop / 中廣流行網
 4. BCC Music / 中廣音樂網
 5. News98 / 九八新聞台
@@ -80,7 +80,7 @@ USB power does not turn this firmware into a USB microphone or install a desktop
 
 ## Verification and limits
 
-[The current marquee verification](verification-tw-scroll.json) compares actual device captures for moving long text and stationary short text, with home re-entry and profile-preservation checks. [The portrait verification](verification-tw-portrait.json) records build, renderer, storage, browser, and device tests for the color/monochrome feature. The actual ESP32 retained monochrome mode across a reset, restored the original RGB palette, and preserved the user's original avatar/profile. [The previous version's device record](verification-tw-radio.json) separately retains successful decoding/PCM output for all ten stations.
+[The BEST RADIO replacement verification](verification-tw-best989.json) records the updated second preset and device playback. [The marquee verification](verification-tw-scroll.json) compares actual device captures for moving long text and stationary short text, with home re-entry and profile-preservation checks. [The portrait verification](verification-tw-portrait.json) records build, renderer, storage, browser, and device tests for the color/monochrome feature. The actual ESP32 retained monochrome mode across a reset, restored the original RGB palette, and preserved the user's original avatar/profile. [The previous version's device record](verification-tw-radio.json) separately retains successful decoding/PCM output for all ten stations.
 
 The radio check was not a human listening assessment. Font coverage remains a subset. External stations and AI services require their own availability and setup. The full upstream host suite has pre-existing macOS Clang/linker compatibility issues, so only the documented targeted checks are claimed as passing.
 

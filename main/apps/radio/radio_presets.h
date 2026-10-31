@@ -14,7 +14,7 @@ inline constexpr RadioStation kRadioPresets[] = {
     {"中国之声", "MP3回归测试", "http://lhttp.qingting.fm/live/15318317/64k.mp3", 0},
 #else
     {"ICRT", "臺北・英語與音樂", "https://stream.rcs.revma.com/x27mfpztxp3vv", 0},
-    {"中廣新聞網", "臺北・新聞時事", "https://stream.rcs.revma.com/78fm9wyy2tzuv", 0},
+    {"好事989 BEST RADIO", "臺北・流行音樂", "https://stream.rcs.revma.com/fkdywbc59duvv", 989},
     {"中廣流行網", "臺北・生活綜合", "https://stream.rcs.revma.com/aw9uqyxy2tzuv", 0},
     {"中廣音樂網", "臺北・音樂節目", "https://stream.rcs.revma.com/ndk05tyy2tzuv", 0},
     {"九八新聞台", "臺北・新聞訪談", "https://stream.rcs.revma.com/pntx1639ntzuv", 0},

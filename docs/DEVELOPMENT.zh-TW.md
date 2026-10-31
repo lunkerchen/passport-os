@@ -2,7 +2,7 @@
 
 [文件目錄](index.md) · [安裝與分割區](INSTALL.zh-TW.md) · [第三方資源](THIRD-PARTY-zh-TW.md)
 
-本 fork 以 Passport OS `0.2.0-rc.56` 為基礎，版本字串是 `0.2.0-rc.56-tw-scroll`。建置使用 **ESP-IDF 5.5.3**；不要因其他 ESP32 專案改用新版 SDK，就直接替換這個專案的依賴。
+本 fork 以 Passport OS `0.2.0-rc.56` 為基礎，版本字串是 `0.2.0-rc.56-tw-best989`。建置使用 **ESP-IDF 5.5.3**；不要因其他 ESP32 專案改用新版 SDK，就直接替換這個專案的依賴。
 
 ## 程式入口與目錄
 

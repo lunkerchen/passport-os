@@ -2,7 +2,7 @@
 
 [文件目錄](index.md) · [日常操作](USAGE.zh-TW.md) · [疑難排解](TROUBLESHOOTING.zh-TW.md)
 
-本指南對應 `0.2.0-rc.56-tw-scroll`。適用 FoloToy AI Passport、ESP32-C3、8 MB Flash。若裝置已能使用目前版本，不需要為了換照片、改簽名或使用隨身語音再刷機。
+本指南對應 `0.2.0-rc.56-tw-best989`。適用 FoloToy AI Passport、ESP32-C3、8 MB Flash。若裝置已能使用目前版本，不需要為了換照片、改簽名或使用隨身語音再刷機。
 
 ## 先判斷要走哪一條路
 
