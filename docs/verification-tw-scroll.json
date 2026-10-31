@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0-rc.56-tw-scroll",
+  "base_version": "0.2.0-rc.56-tw-portrait",
+  "deployed_image": {
+    "bytes": 4102800,
+    "sha256": "0c4238df603483aaf086cb52d089add03679f387cb05cd6ee459c4028d2f5320",
+    "flash_offset": "0x10000"
+  },
+  "checks": {
+    "public_build": "PASS",
+    "app_size_and_sram_budget": "PASS",
+    "partition_table_match": "PASS",
+    "flash_readback_hash": "PASS",
+    "long_signature_position_changes": "PASS",
+    "short_signature_stays_stationary": "PASS",
+    "home_settings_reentry_cycles": 3,
+    "original_profile_restored": true,
+    "heap_integrity": "PASS",
+    "runtime_faults": 0
+  },
+  "method": "Compare actual device screenshots at different times within the signature field; verify profile readback after restoring original data. Raw screenshots/profile backups are private and excluded.",
+  "implementation": {
+    "lvgl_long_mode": "LV_LABEL_LONG_MODE_SCROLL_CIRCULAR",
+    "speed_pixels_per_second": 28,
+    "signature_field_width": 90
+  },
+  "previous_feature_verification": "verification-tw-portrait.json"
+}

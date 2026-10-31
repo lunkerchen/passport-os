@@ -2,7 +2,7 @@
 
 讓 FoloToy AI Passport 顯示繁體中文、保留彩色頭像，並直接收聽十個臺北與臺灣電臺。
 
-**版本：`0.2.0-rc.56-tw-portrait`** · [English](docs/README.en.md) · [文件目錄](docs/index.md) · [版本紀錄](CHANGELOG.md)
+**版本：`0.2.0-rc.56-tw-scroll`** · [English](docs/README.en.md) · [文件目錄](docs/index.md) · [版本紀錄](CHANGELOG.md)
 
 本專案是 [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) 的衍生版本，以 `0.2.0-rc.56` 為基礎。適用硬體為 **FoloToy AI Passport、ESP32-C3、8 MB Flash**；其他外觀相似的 ESP32 板子不能直接套用。
 
@@ -26,6 +26,7 @@
 | --- | --- |
 | 繁體中文介面 | 系統選單、應用程式與手機設定頁使用繁體中文，保留產品名稱與通訊識別字 |
 | 繁中顯示與字型 | 思源黑體 TC 字型子集；動態中文以顯示副本轉換，不改寫原始資料 |
+| 首頁簽名跑馬燈 | 想說的話超出欄位寬度時橫向循環捲動，短文字維持靜止 |
 | 單色／彩色首頁頭像 | 已存彩色照片可隨時切換顯示方式並保留原色；96 × 138 像素，最多 255 色加透明背景，保留舊單色格式讀取 |
 | 固定臺北電臺清單 | 十臺內建清單，不會被自動城市搜尋覆蓋 |
 | HLS 電臺相容性 | 支援這份清單的純音訊 HLS；音訊變體上限為 384 kbit/s |
@@ -80,9 +81,10 @@ IDF_DIR=/path/to/esp-idf bash build.sh release
 
 ## 驗證到哪裡
 
-前一版已在實際 ESP32-C3 上確認十個電臺解碼產生 PCM 並送入裝置音訊輸出，彩色頭像亦經實機 RGB 色塊驗證。本版新增的單色／彩色切換已通過主機、瀏覽器及實機測試，確認重新開機後保留選擇，原始色彩資料與個人資料也能保留。
+前一版已在實際 ESP32-C3 上確認十個電臺解碼產生 PCM 並送入裝置音訊輸出，彩色頭像亦經實機 RGB 色塊驗證。單色／彩色切換已通過主機、瀏覽器及實機測試，確認重新開機後保留選擇與原始色彩。本版另以不同時間的實機截圖確認長簽名會捲動、短簽名保持靜止，並完成首頁重入、記憶體與個人資料保留檢查。
 
-- [本版建置與測試摘要](docs/verification-tw-portrait.json)
+- [本版簽名跑馬燈驗證](docs/verification-tw-scroll.json)
+- [單色／彩色切換驗證](docs/verification-tw-portrait.json)
 - [前版實機驗證紀錄](docs/verification-tw-radio.json)
 - [測試指令與已知限制](docs/DEVELOPMENT.zh-TW.md#執行測試)
 

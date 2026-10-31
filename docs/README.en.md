@@ -2,13 +2,14 @@
 
 [繁體中文](../README.md) · [Documentation index](index.md) · [Changelog](../CHANGELOG.md)
 
-Community firmware for the **FoloToy AI Passport, ESP32-C3, 8 MB Flash**, based on [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) `0.2.0-rc.56`. This fork's firmware version is **`0.2.0-rc.56-tw-portrait`**.
+Community firmware for the **FoloToy AI Passport, ESP32-C3, 8 MB Flash**, based on [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) `0.2.0-rc.56`. This fork's firmware version is **`0.2.0-rc.56-tw-scroll`**.
 
 ## What this fork adds
 
 | Feature | Behavior |
 | --- | --- |
 | Traditional Chinese UI | Localized application and phone setup text, TC font subsets, and display-only conversion for dynamic CJK strings |
+| Home signature marquee | Long signatures scroll horizontally; text that fits remains stationary |
 | Color/monochrome home portraits | Switch a stored color photo between original color and theme monochrome without re-uploading; the original palette remains intact |
 | Fixed Taipei/Taiwan radio list | Ten built-in stations; automatic city discovery does not replace the list |
 | Audio HLS compatibility | Audio-only variants up to 384 kbit/s, with unsupported video/encryption formats still rejected |
@@ -79,7 +80,7 @@ USB power does not turn this firmware into a USB microphone or install a desktop
 
 ## Verification and limits
 
-[The current verification summary](verification-tw-portrait.json) records the successful build, renderer, storage, browser, and device tests. The actual ESP32 retained monochrome mode across a reset, restored the original RGB palette, and preserved the user's original avatar/profile. [The previous version's device record](verification-tw-radio.json) separately retains successful decoding/PCM output for all ten stations.
+[The current marquee verification](verification-tw-scroll.json) compares actual device captures for moving long text and stationary short text, with home re-entry and profile-preservation checks. [The portrait verification](verification-tw-portrait.json) records build, renderer, storage, browser, and device tests for the color/monochrome feature. The actual ESP32 retained monochrome mode across a reset, restored the original RGB palette, and preserved the user's original avatar/profile. [The previous version's device record](verification-tw-radio.json) separately retains successful decoding/PCM output for all ten stations.
 
 The radio check was not a human listening assessment. Font coverage remains a subset. External stations and AI services require their own availability and setup. The full upstream host suite has pre-existing macOS Clang/linker compatibility issues, so only the documented targeted checks are claimed as passing.
 

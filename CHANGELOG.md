@@ -2,6 +2,12 @@
 
 本檔記錄 [lunkerchen/passport-os](https://github.com/lunkerchen/passport-os) 衍生版本。上游版本背景見 [rc.56 說明](docs/release-rc56.md)，實際使用方式見 [README](README.md)。
 
+## 0.2.0-rc.56-tw-scroll
+
+- 首頁「想說的話／個性簽名」超出欄位寬度時，改用橫向循環跑馬燈顯示完整內容；短文字維持靜止。
+- 使用 LVGL 原生標籤捲動，不增加常駐工作執行緒或改寫原簽名資料。
+- 以不同時間的實機截圖比較長／短文字，並檢查首頁重新進入與記憶體完整性；[驗證摘要](docs/verification-tw-scroll.json)。
+
 ## 0.2.0-rc.56-tw-portrait
 
 - 手機設定頁提供明確的「單色／彩色」顯示方式，無須先選新圖片。

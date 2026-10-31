@@ -16,7 +16,8 @@
 | --- | --- |
 | [開發與驗證](DEVELOPMENT.zh-TW.md) | 原始碼入口、建置、電臺修改、字型重現、頭像格式與測試 |
 | [版本紀錄](../CHANGELOG.md) | 本 fork 的版本差異與已知限制 |
-| [本版驗證摘要](verification-tw-portrait.json) | `0.2.0-rc.56-tw-portrait` 的建置、模式切換與實機保留資料結果 |
+| [本版跑馬燈驗證](verification-tw-scroll.json) | `0.2.0-rc.56-tw-scroll` 的長／短簽名顯示與實機檢查 |
+| [頭像模式驗證](verification-tw-portrait.json) | `0.2.0-rc.56-tw-portrait` 的建置、模式切換與實機保留資料結果 |
 | [前版實機紀錄](verification-tw-radio.json) | `0.2.0-rc.56-tw-radio` 的已部署鏡像與實機結果 |
 | [第三方資源](THIRD-PARTY-zh-TW.md) | 思源黑體 TC、OpenCC 來源與授權 |
 

@@ -2,7 +2,7 @@
 
 [文件目錄](index.md) · [安裝與分割區](INSTALL.zh-TW.md) · [第三方資源](THIRD-PARTY-zh-TW.md)
 
-本 fork 以 Passport OS `0.2.0-rc.56` 為基礎，版本字串是 `0.2.0-rc.56-tw-portrait`。建置使用 **ESP-IDF 5.5.3**；不要因其他 ESP32 專案改用新版 SDK，就直接替換這個專案的依賴。
+本 fork 以 Passport OS `0.2.0-rc.56` 為基礎，版本字串是 `0.2.0-rc.56-tw-scroll`。建置使用 **ESP-IDF 5.5.3**；不要因其他 ESP32 專案改用新版 SDK，就直接替換這個專案的依賴。
 
 ## 程式入口與目錄
 
@@ -85,6 +85,12 @@ uv run --with opencc-python-reimplemented==0.1.7 python tools/generate_zhtw_font
 上傳串流寫入非現用的 a／b 檔案，完成長度與標頭／調色盤驗證後，才提交 NVS 指標。中斷或驗證失敗不能讓未完成檔案取代目前頭像。修改格式時，同時更新上傳處理、讀取容量、首頁配置／釋放及舊格式相容測試。
 
 個人簽名、照片或 Wi-Fi 密碼不是建置設定；不要硬編碼進程式來達成個人化。
+
+## 首頁簽名跑馬燈
+
+首頁簽名使用 LVGL 原生 `LV_LABEL_LONG_MODE_SCROLL_CIRCULAR`，以每秒約 28 像素的速度循環捲動。捲動依文字量測寬度觸發，不按字元數硬切；短文字由 LVGL 維持靜止。沒有新增文字副本緩衝或常駐工作執行緒，生命週期跟隨首頁標籤。
+
+實機驗證比較同一簽名區域在不同時間的截圖：長文字位置改變、短文字畫面不變，並切換首頁／設定三次後檢查記憶體完整性及原個人資料回復。結果見[本版摘要](verification-tw-scroll.json)。
 
 ## 執行測試
 

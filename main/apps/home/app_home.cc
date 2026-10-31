@@ -737,7 +737,8 @@ void create_ui() {
 
     s_lbl_sig = make_label(s_screen, &buddy_font_16, kPhosDim, LV_TEXT_ALIGN_LEFT);
     lv_obj_set_size(s_lbl_sig, 90, 20);
-    lv_label_set_long_mode(s_lbl_sig, LV_LABEL_LONG_MODE_DOTS);
+    lv_label_set_long_mode(s_lbl_sig, LV_LABEL_LONG_MODE_SCROLL_CIRCULAR);
+    lv_obj_set_style_anim_duration(s_lbl_sig, lv_anim_speed_clamped(28, 300, 30000), 0);
     lv_obj_set_pos(s_lbl_sig, 14, 204);
     lv_label_set_text(s_lbl_name, "未設定姓名");
     lv_label_set_text(s_lbl_sig, "未設定簽名");
