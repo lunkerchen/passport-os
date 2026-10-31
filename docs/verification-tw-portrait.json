@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0-rc.56-tw-portrait",
+  "base_version": "0.2.0-rc.56-tw-radio",
+  "artifact": {
+    "path": "build-public/passport-os.bin",
+    "bytes": 4102768,
+    "sha256": "3b5a6053220f56bd2076940d55a1e0c6f014b255ea8878be09919d84d939a5cd",
+    "intended_flash_offset": "0x10000"
+  },
+  "checks": {
+    "public_build": "PASS",
+    "app_size_and_sram_budget": "PASS",
+    "pixel_encoding_and_mode_roundtrip": "PASS",
+    "phone_save_reload_and_failure_paths": "PASS",
+    "production_renderer_source_preservation": "PASS",
+    "atomic_storage_and_invalid_mode_rejection": "PASS",
+    "avatar_upload_regression": "PASS",
+    "portrait_lifecycle_regression": "PASS",
+    "actual_browser_phone_flow": "PASS"
+  },
+  "device_validation": {
+    "status": "PASS",
+    "application_flash_readback_hash": "PASS",
+    "rgb_swatch_capture": "PASS",
+    "monochrome_theme_swatch_capture": "PASS",
+    "mode_persistence_after_reset": "PASS",
+    "original_rgb_roundtrip": "PASS",
+    "original_avatar_restored": true,
+    "profile_unchanged": true,
+    "heap_integrity": "PASS"
+  },
+  "previous_device_evidence": "verification-tw-radio.json",
+  "compatibility": "Legacy monochrome remains readable; previous firmware rejects PC38 monochrome display flag, so switch back to color before downgrading."
+}

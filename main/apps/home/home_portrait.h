@@ -17,6 +17,8 @@
 #define HOME_AVATAR_MAX_BYTES HOME_AVATAR_COLOR_BYTES
 
 /* PC38: header followed by 256 BGRA palette entries and 8-bit pixel indices.
+ * Byte 5 selects display mode: 0=original color, 1=theme monochrome.
+ * Original palette and pixel indices are retained in both modes.
  * Palette entry 0 is transparent; entries 1-255 are opaque original colors. */
 static inline int home_portrait_is_color(const uint8_t *data) {
     return data[0] == 'P' && data[1] == 'C' && data[2] == '3' && data[3] == '8';
@@ -24,8 +26,12 @@ static inline int home_portrait_is_color(const uint8_t *data) {
 static inline size_t home_portrait_stored_size(const uint8_t *data) {
     return home_portrait_is_color(data) ? HOME_AVATAR_COLOR_BYTES : HOME_AVATAR_BYTES;
 }
+static inline uint8_t home_portrait_color_level(const uint8_t *bgra) {
+    const unsigned luminance = (77u * bgra[2] + 150u * bgra[1] + 29u * bgra[0] + 128u) >> 8;
+    return (luminance * 3u + 127u) / 255u;
+}
 static inline int home_portrait_valid_color(const uint8_t *data) {
-    if (!home_portrait_is_color(data) || data[4] != 4 || data[5] || data[6] || data[7]) return 0;
+    if (!home_portrait_is_color(data) || data[4] != 4 || data[5] > 1 || data[6] || data[7]) return 0;
     for (size_t i = 0; i < 256; ++i)
         if (data[HOME_PORTRAIT_HEADER_BYTES + i * 4 + 3] != (i ? 255 : 0)) return 0;
     return 1;

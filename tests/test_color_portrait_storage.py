@@ -64,6 +64,14 @@ int main(void){
  assert(s_avatar_bank!=bank);
  assert(home_profile_read_avatar(out,sizeof(out))==ESP_OK&&!memcmp(out,color,sizeof(color)));
  assert(home_profile_read_avatar(out,HOME_AVATAR_BYTES)==ESP_ERR_INVALID_SIZE);
+ color[5]=1;assert(home_portrait_valid_color(color));
+ assert(home_profile_write_avatar_chunk(color,sizeof(color),true,true,sizeof(color))==ESP_OK);
+ assert(home_profile_read_avatar(out,sizeof(out))==ESP_OK&&out[5]==1&&!memcmp(out,color,sizeof(color)));
+ bank=s_avatar_bank;color[5]=2;
+ assert(home_profile_write_avatar_chunk(color,sizeof(color),true,true,sizeof(color))==ESP_ERR_INVALID_ARG);
+ assert(s_avatar_bank==bank);color[5]=1;
+ assert(home_profile_read_avatar(out,sizeof(out))==ESP_OK&&!memcmp(out,color,sizeof(color)));
+ color[5]=0;assert(home_profile_write_avatar_chunk(color,sizeof(color),true,true,sizeof(color))==ESP_OK);
  bank=s_avatar_bank;color[11]=255;
  assert(home_profile_write_avatar_chunk(color,sizeof(color),true,true,sizeof(color))==ESP_ERR_INVALID_ARG);
  assert(s_avatar_bank==bank);color[11]=0;

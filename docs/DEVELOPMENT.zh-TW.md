@@ -2,7 +2,7 @@
 
 [文件目錄](index.md) · [安裝與分割區](INSTALL.zh-TW.md) · [第三方資源](THIRD-PARTY-zh-TW.md)
 
-本 fork 以 Passport OS `0.2.0-rc.56` 為基礎，版本字串是 `0.2.0-rc.56-tw-radio`。建置使用 **ESP-IDF 5.5.3**；不要因其他 ESP32 專案改用新版 SDK，就直接替換這個專案的依賴。
+本 fork 以 Passport OS `0.2.0-rc.56` 為基礎，版本字串是 `0.2.0-rc.56-tw-portrait`。建置使用 **ESP-IDF 5.5.3**；不要因其他 ESP32 專案改用新版 SDK，就直接替換這個專案的依賴。
 
 ## 程式入口與目錄
 
@@ -78,7 +78,9 @@ uv run --with opencc-python-reimplemented==0.1.7 python tools/generate_zhtw_font
 | `PT35` | 預設模式、2bpp 亮度與獨立可見遮罩 |
 | `PC38` | 8-byte 標頭、256 筆 BGRA 調色盤、96 × 138 個 8-bit 色彩索引 |
 
-`PC38` 調色盤索引 0 透明，1–255 為不透明色彩，總長度為 **14,280 bytes**。首頁以 LVGL I8 顯示，不套用主題單色。手機端負責縮放、量化與預覽；預覽與上傳共用同一套編碼。
+`PC38` 調色盤索引 0 透明，1–255 為不透明色彩，總長度為 **14,280 bytes**。標頭 byte 5 保存顯示方式：0 為彩色，1 為主題單色。兩種模式都保留同一份原始 BGRA 調色盤與色彩索引，單色只轉換首頁顯示副本。
+
+手機設定頁會讀取既有頭像，以相同亮度公式預覽單色效果。只有完成儲存才寫回顯示標記；讀取失敗不應改寫原頭像，較晚回傳的舊資料也不能覆蓋使用者剛選的新照片。舊版韌體不接受 byte 5 為 1 的格式，降級前應先切回彩色並儲存。
 
 上傳串流寫入非現用的 a／b 檔案，完成長度與標頭／調色盤驗證後，才提交 NVS 指標。中斷或驗證失敗不能讓未完成檔案取代目前頭像。修改格式時，同時更新上傳處理、讀取容量、首頁配置／釋放及舊格式相容測試。
 
@@ -92,6 +94,8 @@ uv run --with opencc-python-reimplemented==0.1.7 python tools/generate_zhtw_font
 python3 tools/check_repo.py --firmware-fork
 python3 tests/test_zh_tw_display.py
 node tests/test_portrait_pixels.js
+node tests/test_portrait_mode_page.js
+python3 tests/test_portrait_modes.py
 python3 tests/test_color_portrait_storage.py
 python3 tests/test_avatar_upload.py
 python3 tests/test_home_portrait_lifecycle.py
@@ -103,7 +107,9 @@ c++ -std=c++17 -Wall -Wextra -Werror -fsanitize=address,undefined -Imain tests/t
 | 測試 | 主要證據 |
 | --- | --- |
 | `test_zh_tw_display.py` | UTF-8、來源不變、靜態字串生命週期、空值與配置失敗 |
-| `test_portrait_pixels.js` | 色彩保留、透明度、調色盤容量、確定性編碼及既有三種風格 |
+| `test_portrait_pixels.js` | 色彩保留、透明度、調色盤容量、單色／彩色切換與舊圖預覽 |
+| `test_portrait_mode_page.js` | 不重新選檔的儲存／讀回流程、失敗保留與延遲回應保護 |
+| `test_portrait_modes.py` | 實際首頁繪圖函式的色彩往返、預覽亮度一致性與來源保留 |
 | `test_color_portrait_storage.py` | 原子提交、舊格式／彩色往返、短緩衝與毀損資料回復 |
 | `test_avatar_upload.py` | 分段上傳、暫時逾時、斷線、認證與儲存失敗 |
 | `test_home_portrait_lifecycle.py` | 配置失敗、格式切換、快取與記憶體釋放 |
@@ -112,9 +118,18 @@ c++ -std=c++17 -Wall -Wextra -Werror -fsanitize=address,undefined -Imain tests/t
 
 這份清單是針對本 fork 變更的檢查，不取代所有上游測試。上游 `tools/test-host.sh` 在 macOS Clang 有既有 `-Wnon-c-typedef-for-linkage` 錯誤，部分連結指令也使用 Linux 專用選項；因此本版沒有宣稱 macOS 上的完整套件通過。Linux／CI 應依其實際輸出判定，不把本機摘要當成 GitHub Actions 綠燈。
 
+另可執行瀏覽器流程測試（需要 Playwright 及 Chromium，macOS 已有 Google Chrome 時會優先使用它）：
+
+```bash
+uv run --with playwright playwright install chromium
+uv run --with playwright python tests/test_portrait_mode_browser.py
+```
+
+這項測試以模擬裝置 API 操作實際手機頁面，驗證未選擇新照片時的切換、儲存、重新開頁及舊圖限制，不會操作實際裝置。
+
 ## 實機驗證與發布紀錄
 
-[verification-tw-radio.json](verification-tw-radio.json) 保存已部署鏡像的 SHA256、大小、功能測試與十臺實機解碼結果。它是該次建置與裝置測試的歷史摘要，不是每次 clone 後重新執行的即時報告。
+[verification-tw-portrait.json](verification-tw-portrait.json) 記錄本版建置、主機／瀏覽器流程及實機模式切換結果，包含重開機後保留選擇與原始資料往返。[verification-tw-radio.json](verification-tw-radio.json) 保留前版十臺實機解碼結果；兩份摘要各自對應已驗證的功能與鏡像。
 
 - 收音機：需在裝置上解碼並把 PCM 送入音訊輸出；電腦能讀到網址只算前置檢查。
 - 彩色頭像：以實機畫面 RGB 色塊確認沒有主題染色，並驗證原頭像／個人資料保留。

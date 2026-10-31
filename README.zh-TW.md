@@ -8,5 +8,6 @@
 - [疑難排解](docs/TROUBLESHOOTING.zh-TW.md)
 - [開發、字型與測試](docs/DEVELOPMENT.zh-TW.md)
 - [版本紀錄](CHANGELOG.md)
-- [驗證摘要](docs/verification-tw-radio.json)
+- [本版驗證摘要](docs/verification-tw-portrait.json)
+- [前版實機紀錄](docs/verification-tw-radio.json)
 - [English](docs/README.en.md)

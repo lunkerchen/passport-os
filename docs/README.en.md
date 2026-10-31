@@ -2,14 +2,14 @@
 
 [繁體中文](../README.md) · [Documentation index](index.md) · [Changelog](../CHANGELOG.md)
 
-Community firmware for the **FoloToy AI Passport, ESP32-C3, 8 MB Flash**, based on [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) `0.2.0-rc.56`. This fork's firmware version is **`0.2.0-rc.56-tw-radio`**.
+Community firmware for the **FoloToy AI Passport, ESP32-C3, 8 MB Flash**, based on [manchunx7-bit/passport-os](https://github.com/manchunx7-bit/passport-os) `0.2.0-rc.56`. This fork's firmware version is **`0.2.0-rc.56-tw-portrait`**.
 
 ## What this fork adds
 
 | Feature | Behavior |
 | --- | --- |
 | Traditional Chinese UI | Localized application and phone setup text, TC font subsets, and display-only conversion for dynamic CJK strings |
-| Color home portraits | 96 × 138 pixels, up to 255 image colors plus transparency; legacy monochrome portraits remain readable |
+| Color/monochrome home portraits | Switch a stored color photo between original color and theme monochrome without re-uploading; the original palette remains intact |
 | Fixed Taipei/Taiwan radio list | Ten built-in stations; automatic city discovery does not replace the list |
 | Audio HLS compatibility | Audio-only variants up to 384 kbit/s, with unsupported video/encryption formats still rejected |
 | Reproducible resources | Pinned font converter, source-font checksum, third-party licenses, and targeted regression tests |
@@ -65,7 +65,7 @@ Back up the complete device before writing. Compare the device partition table w
 
 ## Color portraits
 
-Open Phone Setup on the device, connect the phone to the displayed `Passport-WiFi-…` access point, and browse to `http://192.168.4.1`. Upload the original color photo, select color mode, crop, preview, and save.
+Open Phone Setup on the device, connect the phone to the displayed `Passport-WiFi-…` access point, and browse to `http://192.168.4.1`. In Home Portrait, choose monochrome or color and save. Stored color photos can switch modes without selecting or uploading a new source image; the original colors remain intact. When replacing a photo, crop and preview before saving.
 
 Existing monochrome files no longer contain their original RGB values. A theme change cannot recover them; upload the original photo again. Portraits use a compact indexed format rather than full-resolution lossless photo storage.
 
@@ -79,7 +79,7 @@ USB power does not turn this firmware into a USB microphone or install a desktop
 
 ## Verification and limits
 
-[The version-specific verification summary](verification-tw-radio.json) records the deployed image hash and size, targeted host tests, color-swatch device capture, and successful decoding/PCM output for all ten stations. This is a historical result for that image, not a live CI report.
+[The current verification summary](verification-tw-portrait.json) records the successful build, renderer, storage, browser, and device tests. The actual ESP32 retained monochrome mode across a reset, restored the original RGB palette, and preserved the user's original avatar/profile. [The previous version's device record](verification-tw-radio.json) separately retains successful decoding/PCM output for all ten stations.
 
 The radio check was not a human listening assessment. Font coverage remains a subset. External stations and AI services require their own availability and setup. The full upstream host suite has pre-existing macOS Clang/linker compatibility issues, so only the documented targeted checks are claimed as passing.
 

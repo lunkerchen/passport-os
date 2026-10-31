@@ -2,6 +2,15 @@
 
 本檔記錄 [lunkerchen/passport-os](https://github.com/lunkerchen/passport-os) 衍生版本。上游版本背景見 [rc.56 說明](docs/release-rc56.md)，實際使用方式見 [README](README.md)。
 
+## 0.2.0-rc.56-tw-portrait
+
+- 手機設定頁提供明確的「單色／彩色」顯示方式，無須先選新圖片。
+- 彩色照片切成單色後保留原始調色盤與像素，可直接切回彩色；重新開頁會讀回已儲存的選擇。
+- 舊格式單色照片會提示需重新選擇原始彩色照片，不會假造原色。
+- 新增實際繪圖函式、模式儲存／錯誤回復、手機頁面及瀏覽器流程測試。
+- 韌體建置及主機／瀏覽器測試通過，並已在實機確認模式切換、重開機後保留選擇、原始 RGB 資料往返與個人資料保留。詳見[本版摘要](docs/verification-tw-portrait.json)。
+- 若降級至前版，應先將彩色照片切回彩色並儲存；前版會拒絕本版新增的單色顯示標記。
+
 ## 0.2.0-rc.56-tw-radio
 
 以原作者 `0.2.0-rc.56` 為基礎，針對 FoloToy AI Passport／ESP32-C3／8 MB Flash 整合以下變更。

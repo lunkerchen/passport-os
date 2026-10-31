@@ -21,7 +21,7 @@ details{border-top:1px solid var(--line);padding:20px 0}summary{cursor:pointer;f
 @media(prefers-reduced-motion:no-preference){.primary,.secondary{transition:background .15s ease-out}}
 .card-row{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}.card-thumb{width:72px;height:96px;object-fit:contain;background:#fff;flex-shrink:0}.card-meta{flex:1;min-width:0}.card-meta p{margin:0 0 8px;font-size:14px}.card-actions{display:flex;flex-wrap:wrap;gap:8px}.card-actions button{min-height:44px;padding:8px 10px;font-size:13px;border:1px solid var(--line);border-radius:6px;background:var(--tint);color:var(--ink);cursor:pointer}.card-actions button:disabled{opacity:.45;cursor:default}.card-actions .remove{color:#923522;background:transparent}.card-actions button:focus-visible{outline:2px solid var(--green);outline-offset:2px}.card-empty{padding:12px 0;color:var(--muted);font-size:14px}</style>
 <style>
-.portrait-presets{border:0;padding:0;margin:0 0 22px;min-width:0}.portrait-presets legend{font-size:14px;font-weight:600;margin-bottom:8px}.portrait-segments{display:grid;grid-template-columns:1fr 1fr 1fr 2fr;gap:4px;padding:4px;background:var(--tint);border-radius:8px}.portrait-segments label{position:relative;margin:0;min-width:0;cursor:pointer}.portrait-segments input{position:absolute;opacity:0;width:1px;height:1px}.portrait-segments span{display:flex;align-items:center;justify-content:center;min-height:44px;padding:6px 4px;font-size:12px;text-align:center;border-radius:5px;line-height:1.4;overflow-wrap:anywhere}.portrait-segments input:checked+span{color:#fff;background:var(--green)}.portrait-segments input:focus-visible+span{outline:3px solid #438259;outline-offset:2px}
+.portrait-presets{border:0;padding:0;margin:0 0 22px;min-width:0}.portrait-presets legend{font-size:14px;font-weight:600;margin-bottom:8px}.portrait-segments{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--tint);border-radius:8px}.portrait-segments label{position:relative;margin:0;min-width:0;cursor:pointer}.portrait-segments input{position:absolute;opacity:0;width:1px;height:1px}.portrait-segments span{display:flex;align-items:center;justify-content:center;min-height:44px;padding:6px 4px;font-size:12px;text-align:center;border-radius:5px;line-height:1.4;overflow-wrap:anywhere}.portrait-segments input:checked+span{color:#fff;background:var(--green)}.portrait-segments input:focus-visible+span{outline:3px solid #438259;outline-offset:2px}
 </style>
 </head>
 <body><main class="shell">
@@ -59,15 +59,15 @@ details{border-top:1px solid var(--line);padding:20px 0}summary{cursor:pointer;f
 <div id="customCityFields" hidden><div class="field"><label for="customCity">自定義城市或區縣名稱</label><input id="customCity" type="text" maxlength="15" placeholder="填寫所在城市"><label for="customRegion" class="help">所在省份</label><select id="customRegion"><option value="">暫不設定省份</option></select><label for="customRadioCity" class="help">收音機城市<span class="optional">區縣可填寫所屬地級市</span></label><input id="customRadioCity" type="text" maxlength="15" placeholder="留空使用上面的城市名稱"><label for="customLat" class="help">緯度</label><input id="customLat" type="text" inputmode="decimal" maxlength="15" placeholder="例如 22.2707"><label for="customLon" class="help">經度</label><input id="customLon" type="text" inputmode="decimal" maxlength="15" placeholder="例如 113.5767"><p class="help">目錄中沒有你的城市或名稱已變更？可填寫地圖中的經緯度；兩項都留空時只設定收音機城市。</p></div></div>
 <button id="retryCities" type="button" class="text-button" hidden>重新載入城市</button>
 <details id="portraitSection"><summary>首頁人像<small id="avatarState">可稍後上傳</small></summary><div class="detail-body">
+<fieldset class="portrait-presets"><legend>頭像顯示方式</legend><div class="portrait-segments">
+<label><input type="radio" name="portraitPreset" id="portraitPresetFlat" value="2"><span>單色</span></label>
+<label><input type="radio" name="portraitPreset" id="portraitPresetColor" value="4" checked><span>彩色</span></label>
+</div></fieldset>
+<p id="portraitModeHelp" class="help">彩色照片可隨時切換單色／彩色，原色會保留；完成設定後生效。</p>
+<div id="savedPortraitPreviewContainer" hidden><canvas id="savedPortraitPreview" width="96" height="138" aria-label="已儲存頭像的顯示預覽"></canvas></div>
 <div class="file-pick"><label for="file">選擇一張清晰的人像</label><input type="file" id="file" name="portrait" accept="image/*" aria-describedby="avatarPickerHelp"></div>
 <details class="picker-help"><summary>選圖沒有反應？從檔案選擇</summary><div class="detail-body"><label for="fileFallback">從檔案選擇人像圖片</label><input type="file" id="fileFallback" name="portraitFile" aria-describedby="avatarPickerHelp"><p id="avatarPickerHelp" class="help">備用入口使用檔案選擇器。請選 JPEG 或 PNG 圖片；若圖片只在相簿中，先儲存到“檔案”。如果兩個入口都打不開，保持連線裝置熱點，在系統 Safari／Chrome 位址列輸入 http://192.168.4.1；也可用電腦連線熱點後上傳。</p></div></details>
 <div id="photoTools" class="photo-tools" hidden>
-<fieldset class="portrait-presets"><legend>人像風格</legend><div class="portrait-segments">
-<label><input type="radio" name="portraitPreset" id="portraitPresetColor" value="4" checked><span>彩色</span></label>
-<label><input type="radio" name="portraitPreset" id="portraitPresetDot" value="1"><span>點陣</span></label>
-<label><input type="radio" name="portraitPreset" id="portraitPresetFlat" value="2"><span>平塗</span></label>
-<label><input type="radio" name="portraitPreset" id="portraitPresetHybrid" value="3"><span>平塗＋區域性點陣</span></label>
-</div></fieldset>
 <div class="crop-layout"><div id="vp" style="height:276px"><img id="pv" alt="人像取景預覽"></div><div><canvas id="binc" width="96" height="138" style="height:138px" aria-label="裝置人像預覽"></canvas><p class="caption">裝置效果</p></div></div><label for="zm" class="caption">縮放人像</label><input type="range" id="zm" min="100" max="400" value="100"><label for="portraitBrightness" class="caption">明暗</label><input type="range" id="portraitBrightness" min="-48" max="48" value="0" style="width:100%;min-height:40px"><label><input type="checkbox" id="portraitBackground"> 去除純色背景</label></div>
 <p id="avatarStatus" class="status" role="status"></p></div></details>
 <details id="cardSection"><summary>彩色隨身名片<small id="shareState">最多 6 張</small></summary><div class="detail-body">
@@ -247,6 +247,7 @@ $('retryMuse').onclick=()=>loadMuse();$('useSavedMuse').onclick=()=>loadMuse(tru
 $('museSection').ontoggle=()=>{if($('museSection').open&&!museLoaded)return loadMuse()};
 
 // Portrait cropping happens on the phone, preserving the device's small memory budget.
+let storedPortrait=null,portraitDirty=false,portraitLoaded=false;
 const VP={w:192,h:276},PORTRAIT={w:96,h:138};let portraitPalette=[0x03120b,0x3a5b45,0x719c80,0xa8edbb],portraitSubjectPalette=[0x254d36,0x4b8060,0x80b795,0xa8edbb];let zoom=1,ox=0,oy=0,base=1,portrait=null,shareImg=null,imageLoading=0,portraitPreset=4,portraitSampleCache=null,portraitPreparedCache=null;
 const CARD_MAX=6,CARD_BYTES=24576;let cards=[],cardsDirty=false,cardsReady=false,cardBusy=false,replaceSlot=null,cardStorage=null;
 function clamp(){if(!portrait)return;const s=base*zoom;ox=Math.min(0,Math.max(VP.w-portrait.naturalWidth*s,ox));oy=Math.min(0,Math.max(VP.h-portrait.naturalHeight*s,oy));$('pv').style.width=portrait.naturalWidth*s+'px';$('pv').style.left=ox+'px';$('pv').style.top=oy+'px'}
@@ -342,21 +343,44 @@ function portraitColorPacked(data,w,h,removeBackground,brightness){
  return packed;
 }
 function portraitPacked(){
- if(portraitPreset===4)return portraitColorPacked(portraitPixels(),PORTRAIT.w,PORTRAIT.h,$('portraitBackground').checked,Number($('portraitBrightness').value)||0);
- const {levels,mask}=portraitLevels(portraitPixels(),PORTRAIT.w,PORTRAIT.h,$('portraitBackground').checked,Number($('portraitBrightness').value)||0,portraitPreset),count=PORTRAIT.w*PORTRAIT.h,packed=new Uint8Array(8+count/4+count/8);
- packed.set([80,84,51,53,portraitPreset,0,0,0]);for(let p=0;p<count;p++){packed[8+(p>>2)]|=levels[p]<<(6-2*(p&3));if(mask[p])packed[8+count/4+(p>>3)]|=128>>(p&7)}return packed;
+ const packed=!portrait&&storedPortrait?new Uint8Array(storedPortrait):portraitColorPacked(portraitPixels(),PORTRAIT.w,PORTRAIT.h,$('portraitBackground').checked,Number($('portraitBrightness').value)||0);
+ if(packed[1]===67)packed[5]=portraitPreset===4?0:1;
+ return packed;
 }
 function portraitColor(packed,p){
- if(packed[1]===67){const index=packed[1032+p],i=8+index*4;return index?(packed[i+2]<<16)|(packed[i+1]<<8)|packed[i]:portraitPalette[0]}
+ if(packed[1]===67){const index=packed[1032+p],i=8+index*4;if(!index)return portraitPalette[0];if(packed[5]===1){const y=(77*packed[i+2]+150*packed[i+1]+29*packed[i]+128)>>8;return portraitSubjectPalette[Math.floor((y*3+127)/255)]}return (packed[i+2]<<16)|(packed[i+1]<<8)|packed[i]}
  const count=PORTRAIT.w*PORTRAIT.h,visible=packed[8+count/4+(p>>3)]&(128>>(p&7)),level=(packed[8+(p>>2)]>>(6-2*(p&3)))&3;
  return !visible||(packed[4]===1&&!level)?portraitPalette[0]:portraitSubjectPalette[level];
 }
-function previewPortrait(){if(!portrait)return;const packed=portraitPacked(),g=$('binc').getContext('2d'),o=g.createImageData(PORTRAIT.w,PORTRAIT.h);for(let p=0;p<PORTRAIT.w*PORTRAIT.h;p++){const color=portraitColor(packed,p),i=p*4;o.data[i]=color>>16;o.data[i+1]=(color>>8)&255;o.data[i+2]=color&255;o.data[i+3]=255}g.putImageData(o,0,0)}
-function setPortraitPreset(value){portraitPreset=[1,2,3,4].includes(value)?value:4;for(const [i,id] of ['portraitPresetDot','portraitPresetFlat','portraitPresetHybrid','portraitPresetColor'].entries())$(id).checked=portraitPreset===i+1;previewPortrait()}
-for(const [i,id] of ['portraitPresetDot','portraitPresetFlat','portraitPresetHybrid','portraitPresetColor'].entries())$(id).onchange=()=>{if($(id).checked)setPortraitPreset(i+1)};
+function previewPortrait(){if(!portrait&&!storedPortrait)return;const packed=portraitPacked(),g=$(portrait?'binc':'savedPortraitPreview').getContext('2d'),o=g.createImageData(PORTRAIT.w,PORTRAIT.h);for(let p=0;p<PORTRAIT.w*PORTRAIT.h;p++){const color=portraitColor(packed,p),i=p*4;o.data[i]=color>>16;o.data[i+1]=(color>>8)&255;o.data[i+2]=color&255;o.data[i+3]=255}g.putImageData(o,0,0)}
+function updatePortraitControls(){
+ const legacy=!portrait&&storedPortrait&&storedPortrait[1]!==67;
+ $('portraitPresetColor').disabled=Boolean(legacy||(!portrait&&!portraitLoaded));
+ $('portraitPresetFlat').disabled=!portrait&&!portraitLoaded;
+ $('portraitModeHelp').textContent=legacy?'這張舊頭像只有單色資料；要顯示彩色，請重新選擇原始彩色照片。':'彩色照片可隨時切換單色／彩色，原色會保留；完成設定後生效。';
+ $('savedPortraitPreviewContainer').hidden=Boolean(portrait||!storedPortrait);
+}
+function setPortraitPreset(value,dirty=true){portraitPreset=value===2?2:4;if(!portrait&&storedPortrait&&storedPortrait[1]!==67)portraitPreset=2;$('portraitPresetFlat').checked=portraitPreset===2;$('portraitPresetColor').checked=portraitPreset===4;if(dirty)portraitDirty=true;previewPortrait()}
+for(const [id,preset] of [['portraitPresetFlat',2],['portraitPresetColor',4]])$(id).onchange=()=>{if($(id).checked)setPortraitPreset(preset)};
+async function loadStoredPortrait(present){
+ if(portrait||portraitDirty)return;
+ storedPortrait=null;portraitLoaded=!present;updatePortraitControls();
+ if(!present){setPortraitPreset(4,false);return}
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+ try{
+  const response=await fetch('/api/avatar?t='+encodeURIComponent(window.__T||'')+'&_='+Date.now(),{cache:'no-store',signal:controller.signal});
+  if(!response.ok)throw new Error('avatar read');
+  const data=new Uint8Array(await response.arrayBuffer());
+  const color=data.length===14280&&data[0]===80&&data[1]===67&&data[2]===51&&data[3]===56&&data[4]===4&&data[5]<=1&&!data[6]&&!data[7];
+  const mono=data.length===4976&&data[0]===80&&data[1]===84&&data[2]===51&&data[3]===53&&data[4]<=3;
+  if(!color&&!mono)throw new Error('avatar format');
+  if(portrait||portraitDirty)return;
+  storedPortrait=data;portraitLoaded=true;setPortraitPreset(color&&!data[5]?4:2,false);updatePortraitControls();
+ }catch(e){if(!portrait&&!portraitDirty)say('avatarStatus','無法讀取現有頭像，原圖不會改動；請重新整理，或重新選擇照片。',true)}finally{clearTimeout(timer)}
+}
 $('portraitBrightness').oninput=previewPortrait;$('portraitBackground').onchange=previewPortrait;
 async function imageFile(input){const file=input.files[0];if(!file)return null;if(!file.size)throw new Error('圖片檔案為空，請重新選擇。');if(file.size>20*1024*1024)throw new Error('圖片超過 20 MB，請選擇較小的圖片。');const url=URL.createObjectURL(file);let timer;imageLoading++;try{const img=new Image();await new Promise((resolve,reject)=>{timer=setTimeout(()=>reject(new Error('讀取圖片超時，請將圖片儲存到手機本地後重試。')),15000);img.onload=resolve;img.onerror=()=>reject(new Error('無法讀取圖片，請換一張 JPEG 或 PNG 圖片。'));img.src=url});if(!img.naturalWidth||!img.naturalHeight)throw new Error('圖片尺寸無效，請重新選擇。');return img}catch(e){URL.revokeObjectURL(url);throw e}finally{clearTimeout(timer);imageLoading--}}
-async function selectPortrait(input){say('avatarStatus','正在讀取圖片…');try{const img=await imageFile(input);if(!img){say('avatarStatus',portrait?'已保留之前選擇的人像。':'未選擇圖片。');return}if(portrait)URL.revokeObjectURL(portrait.src);portrait=img;$('pv').src=img.src;base=Math.max(VP.w/img.naturalWidth,VP.h/img.naturalHeight);zoom=1;$('zm').value=100;ox=(VP.w-img.naturalWidth*base)/2;oy=(VP.h-img.naturalHeight*base)/2;clamp();previewPortrait();$('photoTools').hidden=false;say('avatarStatus','已選擇，將在完成設定時儲存。')}catch(e){input.value='';say('avatarStatus',e.message,true)}}
+async function selectPortrait(input){say('avatarStatus','正在讀取圖片…');try{const img=await imageFile(input);if(!img){say('avatarStatus',portrait?'已保留之前選擇的人像。':'未選擇圖片。');return}if(portrait)URL.revokeObjectURL(portrait.src);portrait=img;portraitDirty=true;portraitLoaded=true;updatePortraitControls();$('pv').src=img.src;base=Math.max(VP.w/img.naturalWidth,VP.h/img.naturalHeight);zoom=1;$('zm').value=100;ox=(VP.w-img.naturalWidth*base)/2;oy=(VP.h-img.naturalHeight*base)/2;clamp();previewPortrait();$('photoTools').hidden=false;say('avatarStatus','已選擇，將在完成設定時儲存。')}catch(e){input.value='';say('avatarStatus',e.message,true)}}
 $('zm').oninput=()=>{if(!portrait)return;const z=Number($('zm').value)/100;ox=VP.w/2-(VP.w/2-ox)*z/zoom;oy=VP.h/2-(VP.h/2-oy)*z/zoom;zoom=z;clamp();previewPortrait()};let drag=null;
 $('vp').onpointerdown=e=>{if(!portrait)return;drag={x:e.clientX,y:e.clientY,ox,oy};$('vp').setPointerCapture(e.pointerId)};$('vp').onpointermove=e=>{if(!drag)return;ox=drag.ox+e.clientX-drag.x;oy=drag.oy+e.clientY-drag.y;clamp()};$('vp').onpointerup=$('vp').onpointercancel=()=>{if(drag){drag=null;previewPortrait()}};
 function drawShare(){const c=$('sharec'),g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,240,320);const scale=Math.min(240/shareImg.naturalWidth,320/shareImg.naturalHeight),w=Math.round(shareImg.naturalWidth*scale),h=Math.round(shareImg.naturalHeight*scale);g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(shareImg,Math.floor((240-w)/2),Math.floor((320-h)/2),w,h)}
@@ -414,8 +438,8 @@ async function shareBlob(){
  }
  throw new Error('名片圖片過於複雜，壓縮後仍較大，請換一張圖片。');
 }
-async function save(){if(imageLoading||cardBusy){say('saveStatus','圖片還在讀取，請稍等。',true);return}if(!verified&&!hasSaved){step(1);say('networkStatus','請先連線 Wi-Fi。',true);return}let selected;try{selected=selectedCityProfile()}catch(e){say('saveStatus',e.message,true);return}const profile={name:$('name').value,signature:$('sig').value,address:$('address').value,...selected};for(const [key,max] of [['name',31],['signature',95],['address',127],['city',47],['region',31],['radio_city',47],['lat',15],['lon',15]])if(bytes(profile[key])>max){say('saveStatus','有一項內容過長，請縮短後再儲存。',true);return}$('save').disabled=true;$('back').disabled=true;try{renderCards();if(pendingMuseConfig()){say('saveStatus','正在儲存 Muse 配置…');await saveMuseConfig(true)}say('saveStatus','正在儲存個人資料…');await api('/api/profile',profile);if(portrait){say('saveStatus','正在儲存人像…');await api('/api/avatar',portraitPacked())}await saveCards();say('saveStatus','正在完成設定…');await api('/api/finish',{});$('doneName').textContent=profile.name||'AI 護照';$('doneSummary').textContent='個人資料'+(portrait?'、人像':'')+(cards.length?'、'+cards.length+' 張彩色名片':'')+'已儲存';step(3)}catch(e){say('saveStatus',e.message+' 尚未完成的內容可再次儲存。',true)}finally{$('save').disabled=false;$('back').disabled=false;renderCards()}}
+async function save(){if(imageLoading||cardBusy){say('saveStatus','圖片還在讀取，請稍等。',true);return}if(!verified&&!hasSaved){step(1);say('networkStatus','請先連線 Wi-Fi。',true);return}let selected;try{selected=selectedCityProfile()}catch(e){say('saveStatus',e.message,true);return}const profile={name:$('name').value,signature:$('sig').value,address:$('address').value,...selected};for(const [key,max] of [['name',31],['signature',95],['address',127],['city',47],['region',31],['radio_city',47],['lat',15],['lon',15]])if(bytes(profile[key])>max){say('saveStatus','有一項內容過長，請縮短後再儲存。',true);return}$('save').disabled=true;$('back').disabled=true;try{renderCards();if(pendingMuseConfig()){say('saveStatus','正在儲存 Muse 配置…');await saveMuseConfig(true)}say('saveStatus','正在儲存個人資料…');await api('/api/profile',profile);if(portrait||(portraitDirty&&storedPortrait&&storedPortrait[1]===67)){say('saveStatus','正在儲存頭像顯示方式…');const packed=portraitPacked();await api('/api/avatar',packed);storedPortrait=new Uint8Array(packed);portraitDirty=false}await saveCards();say('saveStatus','正在完成設定…');await api('/api/finish',{});$('doneName').textContent=profile.name||'AI 護照';$('doneSummary').textContent='個人資料'+(portrait?'、人像':'')+(cards.length?'、'+cards.length+' 張彩色名片':'')+'已儲存';step(3)}catch(e){say('saveStatus',e.message+' 尚未完成的內容可再次儲存。',true)}finally{$('save').disabled=false;$('back').disabled=false;renderCards()}}
 $('save').onclick=()=>{cancelLocation();return save()};
-async function load(){try{const [profile,state]=await Promise.all([api('/api/profile'),api('/api/setup')]);await loadCities();for(const [id,key] of [['name','name'],['sig','signature'],['address','address']])$(id).value=profile[key]||'';if(Array.isArray(profile.portrait_palette)&&profile.portrait_palette.length===4)portraitPalette=profile.portrait_palette;if(Array.isArray(profile.portrait_subject_palette)&&profile.portrait_subject_palette.length===4)portraitSubjectPalette=profile.portrait_subject_palette;previewPortrait();restoreCity(profile);$('avatarState').textContent=profile.avatar?'已有，可替換':'可稍後上傳';await loadCards();hasSaved=state.saved_network;$('reuse').hidden=!hasSaved;$('keepSaved').hidden=!hasSaved;$('savedField').hidden=!hasSaved;const selected=$('savedNetwork').value;$('savedNetwork').replaceChildren(new Option('自動選擇附近已儲存的網路',''));for(const name of state.saved_networks||[])$('savedNetwork').add(new Option(name,name));if((state.saved_networks||[]).includes(selected))$('savedNetwork').value=selected;$('connect').disabled=false;say('networkStatus','');if(state.finishing){step(3);return}if(state.state==='connected')networkReady('已連線 '+state.ssid);else if(state.state==='connecting'){lockNetwork(true);polls=0;pollTimer=setTimeout(poll,1000)}await scan()}catch(e){say('networkStatus','無法讀取裝置。請確認手機已連線裝置熱點，然後重新整理頁面。',true)}}
+async function load(){try{const [profile,state]=await Promise.all([api('/api/profile'),api('/api/setup')]);await loadCities();for(const [id,key] of [['name','name'],['sig','signature'],['address','address']])$(id).value=profile[key]||'';if(Array.isArray(profile.portrait_palette)&&profile.portrait_palette.length===4)portraitPalette=profile.portrait_palette;if(Array.isArray(profile.portrait_subject_palette)&&profile.portrait_subject_palette.length===4)portraitSubjectPalette=profile.portrait_subject_palette;previewPortrait();restoreCity(profile);$('avatarState').textContent=profile.avatar?'已有，可替換':'可稍後上傳';await loadStoredPortrait(profile.avatar);await loadCards();hasSaved=state.saved_network;$('reuse').hidden=!hasSaved;$('keepSaved').hidden=!hasSaved;$('savedField').hidden=!hasSaved;const selected=$('savedNetwork').value;$('savedNetwork').replaceChildren(new Option('自動選擇附近已儲存的網路',''));for(const name of state.saved_networks||[])$('savedNetwork').add(new Option(name,name));if((state.saved_networks||[]).includes(selected))$('savedNetwork').value=selected;$('connect').disabled=false;say('networkStatus','');if(state.finishing){step(3);return}if(state.state==='connected')networkReady('已連線 '+state.ssid);else if(state.state==='connecting'){lockNetwork(true);polls=0;pollTimer=setTimeout(poll,1000)}await scan()}catch(e){say('networkStatus','無法讀取裝置。請確認手機已連線裝置熱點，然後重新整理頁面。',true)}}
 load().finally(()=>loadMuse());
 </script></body></html>

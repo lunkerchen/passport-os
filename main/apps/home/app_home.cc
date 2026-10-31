@@ -205,6 +205,13 @@ void expand_portrait(void) {
     lv_image_cache_drop(&s_portrait_dsc);
     if (home_portrait_is_color(s_portrait_packed)) {
         memcpy(s_portrait_pixels, s_portrait_packed + HOME_PORTRAIT_HEADER_BYTES, HOME_PORTRAIT_I8_BYTES);
+        if (s_portrait_packed[5] == 1) {
+            auto *palette = reinterpret_cast<lv_color32_t *>(s_portrait_pixels);
+            for (size_t i = 1; i < 256; ++i) {
+                const uint8_t level = home_portrait_color_level(s_portrait_packed + HOME_PORTRAIT_HEADER_BYTES + i * 4);
+                palette[i] = lv_color_to_32(lv_color_hex(ui_theme_portrait_subject_color(level)), LV_OPA_COVER);
+            }
+        }
         return;
     }
     if (s_portrait_packed[4] == 0) {
