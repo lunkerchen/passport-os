@@ -16,11 +16,15 @@ prelude = r'''
 #include <cstring>
 #include <set>
 #define HOME_AVATAR_BYTES 4976
+#define HOME_AVATAR_MAX_BYTES 14280
+#define HOME_PORTRAIT_I8_BYTES 14272
+static bool home_portrait_is_color(const uint8_t *p){return p[4]==4;}
 #define HOME_PORTRAIT_PIXELS 14400
 #define HOME_PORTRAIT_I4_BYTES 7264
 #define HOME_PORTRAIT_W 120
 #define LV_COLOR_FORMAT_A8 1
 #define LV_COLOR_FORMAT_I4 2
+#define LV_COLOR_FORMAT_I8 3
 #define LV_OBJ_FLAG_HIDDEN 1
 #define ESP_OK 0
 #define ESP_FAIL -1
@@ -38,7 +42,7 @@ static int allocations,fail_at,version=1;
 static std::set<void*>live;
 static void *allocate(size_t n){if(++allocations==fail_at)return nullptr;void*p=malloc(n);assert(p);live.insert(p);return p;}
 static void release(void*p){if(p){assert(p!=displayed);assert(live.erase(p)==1);free(p);}}
-static int home_profile_read_avatar(uint8_t*p,size_t n){assert(n==4976);if(fail_read)return ESP_FAIL;memset(p,0,n);p[4]=version;return ESP_OK;}
+static int home_profile_read_avatar(uint8_t*p,size_t n){assert(n==HOME_AVATAR_MAX_BYTES);if(fail_read)return ESP_FAIL;memset(p,0,n);p[4]=version;return ESP_OK;}
 static void lv_image_set_src(void*,const void*p){displayed=p;}
 static void lv_image_cache_drop(const void*){}
 static void lv_obj_set_style_image_recolor(void*,int,int){}
@@ -58,6 +62,7 @@ int main(){
  apply_avatar(true);assert(hidden&&!displayed&&live.size()==1);
  fail_at=0;apply_avatar(true);assert(!hidden&&s_portrait_dsc.data==s_portrait_pixels&&live.size()==2);
  int before=allocations;assert(read_portrait(true)==ESP_OK);apply_avatar(true);assert(allocations==before);
+ version=4;assert(read_portrait(true)==ESP_OK);apply_avatar(true);assert(!hidden&&s_portrait_dsc.header.cf==LV_COLOR_FORMAT_I8&&s_portrait_dsc.data_size==HOME_PORTRAIT_I8_BYTES&&live.size()==2);
  version=0;assert(read_portrait(true)==ESP_OK);apply_avatar(true);assert(!hidden&&s_portrait_dsc.data_size==14400&&live.size()==2);
  fail_read=true;apply_avatar(read_portrait(true)==ESP_OK);assert(hidden&&!displayed);
  cleanup();assert(!s_portrait_pixels&&!s_portrait_packed&&!s_portrait_dsc.data&&live.empty());

@@ -372,10 +372,10 @@ void voice_app_on_key(uint8_t btn, app_btn_event_t event, uint16_t mv) {
 
 const passport_app_t g_voice_app = {
     .id = APP_ID_VOICE,
-    .name = "随身 AI 语音",
+    .name = "隨身 AI 語音",
     .en_name = "VOICE",
-    .desc = "按住上键说话\n文字输入到电脑光标处",
-    .tag = "需电脑",
+    .desc = "按住上鍵說話\n文字輸入到電腦遊標處",
+    .tag = "需電腦",
     .theme_color = 0x4ED39A,
     .init = voice_app_init,
     .start = voice_app_start,

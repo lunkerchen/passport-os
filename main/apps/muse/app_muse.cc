@@ -75,17 +75,17 @@ void composition(int layout, uint32_t now) {
     }
 }
 bool pairing_problem(const char *detail) {
-    return std::strstr(detail, "配对") || std::strstr(detail, "重新添加");
+    return std::strstr(detail, "配對") || std::strstr(detail, "重新新增");
 }
 // The footer must not contradict the detail: pairing problems are fixed by
 // pairing again, and memory/Bluetooth leftovers only clear after leaving.
 // Network errors never suggest pairing: it wipes the account link, and
 // pairing again away from home needs the phone and its Bluetooth.
 const char *error_action(const char *detail) {
-    if (pairing_problem(detail)) return "长按下键重新配对";
-    if (std::strstr(detail, "重启")) return "请重启设备后再连接";
-    if (std::strstr(detail, "返回") || std::strstr(detail, "重新进入")) return "返回后重新打开 Muse";
-    return "确定重试";
+    if (pairing_problem(detail)) return "長按下鍵重新配對";
+    if (std::strstr(detail, "重啟")) return "請重啟裝置後再連線";
+    if (std::strstr(detail, "返回") || std::strstr(detail, "重新進入")) return "返回後重新開啟 Muse";
+    return "確定重試";
 }
 int avatar_frame(const passport_muse_snapshot_t &state, uint32_t now) {
     uint32_t age = now - s_stage_at;
@@ -111,24 +111,24 @@ void refresh() {
     bool changed = !s_started || state.stage != s_stage;
     if (changed) { s_stage = state.stage; s_stage_at = now; s_clock_at = now - 1000; s_level = 0; }
     ui_pixel_label_set_text(s_name, std::strcmp(state.name, "Muse") == 0 ? "" : state.name);
-    const char *status = "连接你的 Muse", *action = "手机设置页添加 Muse", *detail = "在手机设置页填写 SDK Token";
+    const char *status = "連線你的 Muse", *action = "手機設定頁新增 Muse", *detail = "在手機設定頁填寫 SDK Token";
     bool guidance = true;
     switch (state.stage) {
         case PASSPORT_MUSE_NEEDS_TOKEN: break;
-        case PASSPORT_MUSE_PAIRING: status = "等待配对"; action = "在手机添加设备"; break;
-        case PASSPORT_MUSE_CONFIRM: status = "是你的手机吗"; detail = "确认后即可连接 Muse"; action = "按确定键允许配对"; break;
-        case PASSPORT_MUSE_PHONE_SETUP: status = "就快好了"; detail = "在手机完成联网设置"; action = "在手机继续操作"; break;
+        case PASSPORT_MUSE_PAIRING: status = "等待配對"; action = "在手機新增裝置"; break;
+        case PASSPORT_MUSE_CONFIRM: status = "是你的手機嗎"; detail = "確認後即可連線 Muse"; action = "按確定鍵允許配對"; break;
+        case PASSPORT_MUSE_PHONE_SETUP: status = "就快好了"; detail = "在手機完成聯網設定"; action = "在手機繼續操作"; break;
         case PASSPORT_MUSE_CONNECTING:
-            status = "正在连接"; action = "正在连接你的 Muse"; guidance = false;
+            status = "正在連線"; action = "正在連線你的 Muse"; guidance = false;
             // Reconnect reasons ("内存不足，正在重连" ...) explain a long wait.
             detail = std::strcmp(state.detail, action) == 0 ? "" : state.detail; break;
-        case PASSPORT_MUSE_READY: status = "我准备好了"; detail = ""; action = "按住上键说话 · 松开发送"; guidance = false; break;
-        case PASSPORT_MUSE_LISTENING: status = "我在听"; action = "松开上键发送"; detail = ""; guidance = false; break;
-        case PASSPORT_MUSE_WORKING: status = "正在思考"; action = "下键停止等待"; detail = ""; guidance = false; break;
-        case PASSPORT_MUSE_REPLY: status = "收到回复"; action = "按住上键继续说话"; detail = ""; guidance = false; break;
+        case PASSPORT_MUSE_READY: status = "我準備好了"; detail = ""; action = "按住上鍵說話 · 鬆開傳送"; guidance = false; break;
+        case PASSPORT_MUSE_LISTENING: status = "我在聽"; action = "鬆開上鍵傳送"; detail = ""; guidance = false; break;
+        case PASSPORT_MUSE_WORKING: status = "正在思考"; action = "下鍵停止等待"; detail = ""; guidance = false; break;
+        case PASSPORT_MUSE_REPLY: status = "收到回覆"; action = "按住上鍵繼續說話"; detail = ""; guidance = false; break;
         case PASSPORT_MUSE_ERROR:
-            status = "连接遇到问题"; detail = state.detail;
-            action = (int32_t)(s_repair_armed_until - now) > 0 ? "再次长按下键清除配对" : error_action(state.detail);
+            status = "連線遇到問題"; detail = state.detail;
+            action = (int32_t)(s_repair_armed_until - now) > 0 ? "再次長按下鍵清除配對" : error_action(state.detail);
             break;
     }
     bool showing_reply = state.reply_is_answer && state.reply[0];
@@ -149,26 +149,26 @@ void refresh() {
     }
     char reply_status[64];
     if (showing_reply) {
-        const char *heading = state.stage == PASSPORT_MUSE_WORKING || state.stage == PASSPORT_MUSE_CONNECTING ? "恢复同步" :
-                              state.stage == PASSPORT_MUSE_ERROR ? "同步中断" : "收到回复";
+        const char *heading = state.stage == PASSPORT_MUSE_WORKING || state.stage == PASSPORT_MUSE_CONNECTING ? "恢復同步" :
+                              state.stage == PASSPORT_MUSE_ERROR ? "同步中斷" : "收到回覆";
         snprintf(reply_status, sizeof(reply_status), "%s %u/%u", heading, s_page_number, s_page_count);
         status = reply_status;
-        action = state.stage == PASSPORT_MUSE_ERROR ? "确定重连 · 上键继续说话" :
-                 s_page_count > 1 ? "确定翻页 · 上键继续说话" : "按住上键继续说话";
+        action = state.stage == PASSPORT_MUSE_ERROR ? "確定重連 · 上鍵繼續說話" :
+                 s_page_count > 1 ? "確定翻頁 · 上鍵繼續說話" : "按住上鍵繼續說話";
     }
     ui_pixel_label_set_text(s_status, status);
     ui_pixel_text_color(s_status, state.stage == PASSPORT_MUSE_ERROR ? UI_DANGER : UI_TEXT);
     char pairing_hint[96];
     if (state.stage == PASSPORT_MUSE_PAIRING) {
         const char *tail = strrchr(state.device_name, '-');
-        snprintf(pairing_hint, sizeof(pairing_hint), "手机 Muse / 设置 / 设备\n选择尾号 %s", tail ? tail + 1 : state.device_name);
+        snprintf(pairing_hint, sizeof(pairing_hint), "手機 Muse / 設定 / 裝置\n選擇尾號 %s", tail ? tail + 1 : state.device_name);
         detail = pairing_hint;
     }
     if (!showing_reply && (changed || now - s_clock_at >= 1000)) {
         char clock[48];
         unsigned seconds = (now - s_stage_at) / 1000;
         if (state.stage == PASSPORT_MUSE_LISTENING || state.stage == PASSPORT_MUSE_WORKING) {
-            snprintf(clock,sizeof(clock),"%s %02u:%02u",state.stage == PASSPORT_MUSE_LISTENING ? "录音" : "等待",seconds/60,seconds%60);
+            snprintf(clock,sizeof(clock),"%s %02u:%02u",state.stage == PASSPORT_MUSE_LISTENING ? "錄音" : "等待",seconds/60,seconds%60);
             detail = clock;
         }
         ui_pixel_label_set_text(s_detail, detail); s_clock_at = now;
@@ -227,7 +227,7 @@ void start() {
     s_reply = label("",154,108,UI_TEXT);
     lv_obj_set_style_text_align(s_reply,LV_TEXT_ALIGN_LEFT,0);
     lv_obj_set_style_text_line_space(s_reply,2,0);
-    s_action = ui_pixel_footer(s_screen,"","长按确定返回",&buddy_font_16);
+    s_action = ui_pixel_footer(s_screen,"","長按確定返回",&buddy_font_16);
     s_reply_revision=0;s_page_at=s_next_page=0;s_page_number=s_page_count=1;s_page_dirty=true;
     s_started=false;s_showing_reply=false;s_frame=-1;s_layout=-1;s_happy_until=0;s_battery_at=lv_tick_get()-5000;
     refresh();lv_screen_load(s_screen);s_timer=lv_timer_create(tick,50,nullptr);
@@ -276,7 +276,7 @@ void key(uint8_t button, app_btn_event_t event, uint16_t) {
 }
 }
 extern const passport_app_t g_muse_app = {
-    .id = APP_ID_MUSE, .name = "Muse", .en_name = "MUSE", .desc = "语音交给你的 Muse",
+    .id = APP_ID_MUSE, .name = "Muse", .en_name = "MUSE", .desc = "語音交給你的 Muse",
     .tag = "需代理", .theme_color = 0x8DA7B0,
     .init = init, .start = start, .stop = stop, .on_key = key,
 };

@@ -65,7 +65,7 @@ void home_clock_format_date(char *buf, size_t cap) {
 }
 
 void home_clock_format_weekday(char *buf, size_t cap) {
-    static const char *kWeek[] = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+    static const char *kWeek[] = {"週日", "週一", "週二", "週三", "週四", "週五", "週六"};
     if (!buf || cap < 8) return;
     if (!home_clock_valid()) {
         snprintf(buf, cap, "----");

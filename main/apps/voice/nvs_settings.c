@@ -72,6 +72,6 @@ void nvs_settings_factory_reset(void) {
         nvs_erase_all(h);
         nvs_commit(h);
         nvs_close(h);
-        ESP_LOGW(TAG, "app 命名空间已清空");
+        ESP_LOGW(TAG, "app 名稱空間已清空");
     }
 }

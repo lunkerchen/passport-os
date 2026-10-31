@@ -396,7 +396,7 @@ extern "C" void app_main(void) {
     // 4. 初始化全局 Wi-Fi 管理器；若已存有配置则在后台自动拉起 Station 连接
     WifiManagerConfig wifi_cfg = {};
     wifi_cfg.ssid_prefix = "Passport-WiFi";
-    wifi_cfg.language = "zh-CN";
+    wifi_cfg.language = "zh-TW";
     WifiManager::GetInstance().Initialize(wifi_cfg);
     // 待机省电默认档:MAX modem sleep(首页/桌面/设置等非流媒体前台)。
     // 进 radio/voice/xiaozhi 时由 app_registry 切回 BALANCED,上传模式由首页恢复。

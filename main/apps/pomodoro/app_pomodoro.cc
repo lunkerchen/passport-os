@@ -30,8 +30,8 @@ bool s_reset_confirm;
 
 const char *phase_name(uint8_t phase) {
     if (phase == POMODORO_SHORT_BREAK) return "短休息";
-    if (phase == POMODORO_LONG_BREAK) return "长休息";
-    return "专注时间";
+    if (phase == POMODORO_LONG_BREAK) return "長休息";
+    return "專注時間";
 }
 
 lv_obj_t *label(const char *text, const lv_font_t *font, uint32_t color,
@@ -69,35 +69,35 @@ void refresh() {
     if (finished) s_reset_confirm = false;
     const uint32_t accent = s_clock.phase == POMODORO_FOCUS ? UI_ACCENT : UI_WARNING;
     ui_pixel_label_set_text(s_phase, finished ?
-        (s_clock.phase == POMODORO_FOCUS ? "专注完成" : "休息结束") : phase_name(s_clock.phase));
+        (s_clock.phase == POMODORO_FOCUS ? "專注完成" : "休息結束") : phase_name(s_clock.phase));
     ui_pixel_text_color(s_phase, accent);
     char text[80];
     const unsigned seconds = pomodoro_remaining_seconds(&s_clock, now);
     std::snprintf(text, sizeof(text), "%02u:%02u", seconds / 60, seconds % 60);
     ui_pixel_label_set_text(s_time, text);
-    const char *status = s_clock.phase == POMODORO_FOCUS ? "给一件事，完整的时间" : "放松一下，再出发";
-    const char *action = "确定开始 · 上下切换";
+    const char *status = s_clock.phase == POMODORO_FOCUS ? "給一件事，完整的時間" : "放鬆一下，再出發";
+    const char *action = "確定開始 · 上下切換";
     if (finished) {
         const uint8_t next = pomodoro_next_phase(&s_clock);
-        status = next == POMODORO_FOCUS ? "休息好了，再开始" :
-                 next == POMODORO_LONG_BREAK ? "接下来长休息 15 分钟" : "接下来休息 5 分钟";
-        action = next == POMODORO_FOCUS ? "确定开始专注 · 上下切换" : "确定开始休息 · 上下切换";
+        status = next == POMODORO_FOCUS ? "休息好了，再開始" :
+                 next == POMODORO_LONG_BREAK ? "接下來長休息 15 分鐘" : "接下來休息 5 分鐘";
+        action = next == POMODORO_FOCUS ? "確定開始專注 · 上下切換" : "確定開始休息 · 上下切換";
     } else if (s_clock.status == POMODORO_RUNNING) {
-        status = s_clock.phase == POMODORO_FOCUS ? "专注进行中" : "休息进行中";
-        action = "确定暂停 · 下键重置";
+        status = s_clock.phase == POMODORO_FOCUS ? "專注進行中" : "休息進行中";
+        action = "確定暫停 · 下鍵重置";
     } else if (s_clock.status == POMODORO_PAUSED) {
-        status = "已暂停，随时继续";
-        action = "确定继续 · 下键重置";
+        status = "已暫停，隨時繼續";
+        action = "確定繼續 · 下鍵重置";
     }
     if (s_reset_confirm) {
-        status = "重置当前计时？";
-        action = "确定重置 · 上键取消";
+        status = "重置當前計時？";
+        action = "確定重置 · 上鍵取消";
     }
     ui_pixel_label_set_text(s_status, status);
     ui_pixel_text_color(s_status, s_reset_confirm ? UI_WARNING : UI_TEXT_DIM);
     ui_pixel_label_set_text(s_primary, action);
     const unsigned shown = s_clock.completed > 999 ? 999 : s_clock.completed;
-    std::snprintf(text, sizeof(text), "已完成 %u%s 轮专注", shown, s_clock.completed > 999 ? "+" : "");
+    std::snprintf(text, sizeof(text), "已完成 %u%s 輪專注", shown, s_clock.completed > 999 ? "+" : "");
     ui_pixel_label_set_text(s_count, text);
     unsigned dots = s_clock.completed % 4;
     if (!dots && s_clock.completed) dots = 4;
@@ -128,7 +128,7 @@ void start() {
     s_screen = lv_obj_create(nullptr);
     ui_pixel_background(s_screen);
     lv_obj_t *top = ui_pixel_top_bar(s_screen);
-    lv_obj_t *title = ui_pixel_label(top, "番茄时钟", &buddy_font_16, UI_TEXT);
+    lv_obj_t *title = ui_pixel_label(top, "番茄鐘", &buddy_font_16, UI_TEXT);
     lv_obj_align(title, LV_ALIGN_LEFT_MID, 12, 0);
     s_battery = ui_pixel_battery_create(top, 206, 6, UI_TEXT, &lv_font_montserrat_14);
     s_phase = label("", &pomodoro_font_20, UI_ACCENT, 12, 49, 216, 28);
@@ -139,7 +139,7 @@ void start() {
     for (unsigned i = 0; i < 4; ++i)
         s_dots[i] = block(s_screen, 74 + i * 25, 215, 17, 5, UI_SURFACE_ALT);
     s_count = label("", &buddy_font_16, UI_TEXT_DIM, 12, 233, 216, 24);
-    s_primary = ui_pixel_footer(s_screen, "", "长按确定返回", &buddy_font_16);
+    s_primary = ui_pixel_footer(s_screen, "", "長按確定返回", &buddy_font_16);
     s_battery_updated_us = 0;
     refresh();
     lv_screen_load(s_screen);
@@ -223,7 +223,7 @@ void pomodoro_service_tick() {
                 const uint32_t before = esp_get_free_heap_size();
                 s_notice = lv_label_create(lv_layer_top());
                 lv_label_set_text_static(s_notice, s_clock.phase == POMODORO_FOCUS ?
-                    "番茄钟 · 专注完成" : "番茄钟 · 休息结束");
+                    "番茄鍾 · 專注完成" : "番茄鍾 · 休息結束");
                 lv_obj_set_style_text_font(s_notice, &buddy_font_16, 0);
                 lv_obj_set_style_text_color(s_notice, lv_color_hex(UI_ON_ACCENT), 0);
                 lv_obj_set_style_text_align(s_notice, LV_TEXT_ALIGN_CENTER, 0);
@@ -245,9 +245,9 @@ void pomodoro_service_tick() {
 
 extern const passport_app_t g_pomodoro_app = {
     .id = APP_ID_POMODORO,
-    .name = "番茄时钟",
+    .name = "番茄鐘",
     .en_name = "POMODORO",
-    .desc = "专注与休息\n后台继续计时",
+    .desc = "專注與休息\n後臺繼續計時",
     .tag = "OFFLINE",
     .theme_color = 0x8CF5A6,
     .init = nullptr,

@@ -103,7 +103,7 @@ static int tx_send(uint8_t type, const void *payload, size_t len)
         return -1;
     }
     if (xSemaphoreTake(s_tx_mux, pdMS_TO_TICKS(50)) != pdTRUE) {
-        ESP_LOGW(TAG, "TX 互斥等待超时,丢弃该帧");
+        ESP_LOGW(TAG, "TX 互斥等待超時,丟棄該幀");
         return -1;
     }
     int rc = -1;
@@ -116,7 +116,7 @@ static int tx_send(uint8_t type, const void *payload, size_t len)
         if (n == (ssize_t)(len + 1)) {
             rc = 0;
         } else {
-            ESP_LOGW(TAG, "sendto 失败: rc=%d errno=%d", (int)n, errno);
+            ESP_LOGW(TAG, "sendto 失敗: rc=%d errno=%d", (int)n, errno);
         }
     }
     xSemaphoreGive(s_tx_mux);
@@ -194,7 +194,7 @@ static void rx_task(void *arg)
             if (type == VOICE_UDP_T_BEACON) {
                 s_beacon_cnt++;
                 if (peer_accept_beacon(&src)) {
-                    ESP_LOGI(TAG, "companion beacon 来自 %s → link up",
+                    ESP_LOGI(TAG, "companion beacon 來自 %s → link up",
                              inet_ntoa(src.sin_addr));
                     send_device_hello();
                 }
@@ -211,11 +211,11 @@ static void rx_task(void *arg)
                 if (app_protocol_parse(json, plen, &ev)) {
                     app_protocol_dispatch_event(&ev);   // 审批重要投递,其余零阻塞
                 } else {
-                    ESP_LOGW(TAG, "下行 JSON 拒绝: %.*s",
+                    ESP_LOGW(TAG, "下行 JSON 拒絕: %.*s",
                              (int)(plen > 80 ? 80 : plen), json);
                 }
             } else {
-                ESP_LOGW(TAG, "未知报文类型 0x%02x(%d B),忽略", type, (int)n);
+                ESP_LOGW(TAG, "未知報文型別 0x%02x(%d B),忽略", type, (int)n);
             }
         }
 
@@ -256,14 +256,14 @@ int udp_audio_init(void)
     if (s_tx_mux == NULL) {
         s_tx_mux = xSemaphoreCreateMutexStatic(&s_tx_mux_storage);
         if (s_tx_mux == NULL) {
-            ESP_LOGE(TAG, "TX 互斥创建失败");
+            ESP_LOGE(TAG, "TX 互斥建立失敗");
             return -1;
         }
     }
 
     int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sock < 0) {
-        ESP_LOGE(TAG, "socket 创建失败: errno=%d", errno);
+        ESP_LOGE(TAG, "socket 建立失敗: errno=%d", errno);
         return -1;
     }
     struct sockaddr_in addr;
@@ -272,7 +272,7 @@ int udp_audio_init(void)
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port        = htons(VOICE_UDP_PORT);
     if (bind(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        ESP_LOGE(TAG, "bind %d 失败: errno=%d", VOICE_UDP_PORT, errno);
+        ESP_LOGE(TAG, "bind %d 失敗: errno=%d", VOICE_UDP_PORT, errno);
         close(sock);
         return -1;
     }
@@ -288,13 +288,13 @@ int udp_audio_init(void)
     s_sock = sock;
     s_active = true;
     if (xTaskCreate(rx_task, "udp_rx", 4096, NULL, 4, &s_rx_task) != pdPASS) {
-        ESP_LOGE(TAG, "RX 任务创建失败");
+        ESP_LOGE(TAG, "RX 任務建立失敗");
         s_active = false;
         close(sock);
         s_sock = -1;
         return -1;
     }
-    ESP_LOGI(TAG, "UDP 通道就绪(port %d),等待 companion beacon", VOICE_UDP_PORT);
+    ESP_LOGI(TAG, "UDP 通道就緒(port %d),等待 companion beacon", VOICE_UDP_PORT);
     return 0;
 }
 
@@ -309,7 +309,7 @@ int udp_audio_deinit(void)
         vTaskDelay(pdMS_TO_TICKS(10));
     }
     if (s_rx_task != NULL) {
-        ESP_LOGW(TAG, "RX 任务未在 500ms 内退出(继续关闭,任务将自行收敛)");
+        ESP_LOGW(TAG, "RX 任務未在 500ms 內退出(繼續關閉,任務將自行收斂)");
     }
     // 3. 关 socket
     if (s_sock >= 0) {
@@ -323,7 +323,7 @@ int udp_audio_deinit(void)
     memset(&s_peer, 0, sizeof(s_peer));
     portEXIT_CRITICAL(&s_peer_mux);
     s_audio_seq = 0;
-    ESP_LOGI(TAG, "UDP 通道已关闭");
+    ESP_LOGI(TAG, "UDP 通道已關閉");
     return 0;
 }
 

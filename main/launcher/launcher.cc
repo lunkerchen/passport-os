@@ -80,8 +80,8 @@ const char *app_chinese_name(passport_app_id_t id) {
         return app->name;
     }
     switch (id) {
-        case APP_ID_WIFI: return "无线网络";
-        case APP_ID_SETTINGS: return "设置";
+        case APP_ID_WIFI: return "無線網路";
+        case APP_ID_SETTINGS: return "設定";
         default: return "";
     }
 }
@@ -343,7 +343,7 @@ void launcher_ui_init(void) {
     s_battery = ui_pixel_battery_create(s_screen, 206, 6, kStatus,
                                         &lv_font_montserrat_14);
 
-    lv_obj_t *catalogue = ui_pixel_label(s_screen, "应用", &buddy_font_16, UI_TEXT);
+    lv_obj_t *catalogue = ui_pixel_label(s_screen, "應用", &buddy_font_16, UI_TEXT);
     ui_pixel_status_text_align(catalogue, 42, 40, LV_TEXT_ALIGN_LEFT);
     s_clock = ui_pixel_label(s_screen, "--:--", &lv_font_montserrat_14, UI_TEXT);
     ui_pixel_status_text_align(s_clock, 92, 56, LV_TEXT_ALIGN_CENTER);
@@ -381,7 +381,7 @@ void launcher_ui_init(void) {
     lv_label_set_long_mode(s_app_title, LV_LABEL_LONG_DOT);
     lv_obj_set_style_text_align(s_app_title, LV_TEXT_ALIGN_CENTER, 0);
 
-    ui_pixel_footer(s_screen, "上下选择 · 确定打开", "长按确定返回首页", &buddy_font_16);
+    ui_pixel_footer(s_screen, "上下選擇 · 確定開啟", "長按確定返回首頁", &buddy_font_16);
 
     update_card_content();
     launcher_ui_update_status();

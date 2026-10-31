@@ -22,7 +22,7 @@ esp_err_t app_events_init(void) {
     s_queue = xQueueCreateStatic(APP_EVENT_QUEUE_DEPTH, sizeof(app_event_t),
                                  s_queue_storage, &s_queue_struct);
     if (!s_queue) {   // 静态创建仅在存储对齐异常时失败,防御保留
-        ESP_LOGE(TAG, "事件队列创建失败");
+        ESP_LOGE(TAG, "事件佇列建立失敗");
         return ESP_FAIL;
     }
     return ESP_OK;
@@ -31,14 +31,14 @@ esp_err_t app_events_init(void) {
 void app_event_post(const app_event_t *ev) {
     if (!s_queue || !ev) return;
     if (xQueueSend(s_queue, ev, 0) != pdTRUE) {
-        ESP_LOGW(TAG, "事件队列满,丢弃 type=%d", (int)ev->type);
+        ESP_LOGW(TAG, "事件佇列滿,丟棄 type=%d", (int)ev->type);
     }
 }
 
 esp_err_t app_event_post_important(const app_event_t *ev, uint32_t timeout_ms) {
     if (!s_queue || !ev) return ESP_ERR_INVALID_STATE;
     if (xQueueSend(s_queue, ev, pdMS_TO_TICKS(timeout_ms)) != pdTRUE) {
-        ESP_LOGW(TAG, "重要事件投递超时(%u ms),type=%d",
+        ESP_LOGW(TAG, "重要事件投遞超時(%u ms),type=%d",
                  (unsigned)timeout_ms, (int)ev->type);
         return ESP_ERR_TIMEOUT;
     }

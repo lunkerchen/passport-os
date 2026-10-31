@@ -231,7 +231,7 @@ void enter_ready() {
     render_all();
     if (s_dead_panel) lv_obj_set_y(s_dead_panel, 344); /* 移出屏幕 */
     if (s_controls) lv_obj_remove_flag(s_controls, LV_OBJ_FLAG_HIDDEN);
-    if (s_hint_lbl) lv_label_set_text(s_hint_lbl, "确定开始");
+    if (s_hint_lbl) lv_label_set_text(s_hint_lbl, "確定開始");
 }
 
 void on_dead() {
@@ -247,7 +247,7 @@ void on_dead() {
     lv_label_set_text(s_dead_best, text);
     sync_labels();
     if (s_dead_panel) lv_obj_set_y(s_dead_panel, 36 + (s_field_h - 112) / 2); /* 居中盖住棋盘 */
-    if (s_hint_lbl) lv_label_set_text(s_hint_lbl, "确定再来一局");
+    if (s_hint_lbl) lv_label_set_text(s_hint_lbl, "確定再來一局");
     ESP_LOGI(kTag, "game over: score=%d lines=%d best=%d free=%u",
              score, tc_lines(), s_best, (unsigned)esp_get_free_heap_size());
 }
@@ -328,11 +328,11 @@ void build_oom_page() {
         ? LV_BORDER_SIDE_FULL
         : static_cast<lv_border_side_t>(LV_BORDER_SIDE_TOP | LV_BORDER_SIDE_BOTTOM), 0);
     lv_obj_set_style_border_color(s_dead_panel, lv_color_hex(UI_BORDER), 0);
-    s_dead_info = mk_label(s_dead_panel, "内存不足", &buddy_font_16, UI_TEXT,
+    s_dead_info = mk_label(s_dead_panel, "記憶體不足", &buddy_font_16, UI_TEXT,
                            LV_TEXT_ALIGN_CENTER);
     lv_obj_set_width(s_dead_info, 186);
     lv_obj_set_pos(s_dead_info, 3, 30);
-    s_dead_best = mk_label(s_dead_panel, "长按确定返回应用", &buddy_font_16, UI_SUB,
+    s_dead_best = mk_label(s_dead_panel, "長按確定返回應用", &buddy_font_16, UI_SUB,
                            LV_TEXT_ALIGN_CENTER);
     lv_obj_set_width(s_dead_best, 186);
     lv_obj_set_pos(s_dead_best, 3, 66);
@@ -345,7 +345,7 @@ void build_ui() {
     ui_pixel_background(s_screen);
 
     lv_obj_t *bar = ui_pixel_top_bar(s_screen);
-    lv_obj_t *title = mk_label(bar, "俄罗斯方块", &buddy_font_16, UI_TEXT, LV_TEXT_ALIGN_LEFT);
+    lv_obj_t *title = mk_label(bar, "俄羅斯方塊", &buddy_font_16, UI_TEXT, LV_TEXT_ALIGN_LEFT);
     ui_pixel_status_text_align(title, 8, 84, LV_TEXT_ALIGN_LEFT);
     s_score_lbl = mk_label(bar, "0", &lv_font_montserrat_14, UI_YELLOW, LV_TEXT_ALIGN_RIGHT);
     ui_pixel_status_text_align(s_score_lbl, 96, UI_STATUS_CONTENT_RIGHT - 96,
@@ -365,14 +365,14 @@ void build_ui() {
         s_field_h = TC_ROWS * c;
         s_panel_x = 12 + (s_field_w + 1) + 15;
         if (build_board()) { ok = true; break; }
-        ESP_LOGW(kTag, "cell=%d 建格失败(free=%u largest=%u),降一档", c,
+        ESP_LOGW(kTag, "cell=%d 建格失敗(free=%u largest=%u),降一檔", c,
                  (unsigned)esp_get_free_heap_size(),
                  (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL));
         drop_board();
     }
     if (!ok) {
         /* 连最小的格子都建不出来:给出可读提示,别把蓝色过渡屏晾在屏上 */
-        ESP_LOGE(kTag, "棋盘对象创建失败(free=%u)", (unsigned)esp_get_free_heap_size());
+        ESP_LOGE(kTag, "棋盤物件建立失敗(free=%u)", (unsigned)esp_get_free_heap_size());
         build_oom_page();
         return;
     }
@@ -382,7 +382,7 @@ void build_ui() {
     lv_obj_t *frame = block(s_screen, 11, 29, (s_field_w + 1) + 2, (s_field_h + 1) + 2, UI_PAPER);
     if (frame) lv_obj_move_to_index(frame, 0);
 
-    lv_obj_t *cap = mk_label(s_screen, "下一个", &buddy_font_16, UI_TEXT, LV_TEXT_ALIGN_LEFT);
+    lv_obj_t *cap = mk_label(s_screen, "下一個", &buddy_font_16, UI_TEXT, LV_TEXT_ALIGN_LEFT);
     lv_obj_set_pos(cap, s_panel_x, 36);
     for (int i = 0; i < 4; ++i)
         s_next_blk[i] = block(s_screen, s_panel_x, 58, s_cell - 1, s_cell - 1, UI_YELLOW);
@@ -395,7 +395,7 @@ void build_ui() {
     /* 四行统计沿棋盘高度均匀铺开;14px 档落点 92/146/200/254。
        cell 变大后右侧只剩 ~76px,"标题+数值并排"会挤爆,
        改成**标题在上、数值在下**的堆叠式,数值独占整列宽。 */
-    const Row rows[] = {{"得分", &s_val_score, 107}, {"行数", &s_val_lines, 188}};
+    const Row rows[] = {{"得分", &s_val_score, 107}, {"行數", &s_val_lines, 188}};
     for (const Row &r : rows) {
         auto *caption=mk_label(s_screen,r.cap,&buddy_font_16,UI_TEXT_DIM,LV_TEXT_ALIGN_LEFT);
         lv_obj_set_pos(caption,s_panel_x,r.y);
@@ -406,8 +406,8 @@ void build_ui() {
     s_val_level=mk_label(s_screen,"",&lv_font_montserrat_14,UI_TEXT_DIM,LV_TEXT_ALIGN_LEFT);
     s_val_best=mk_label(s_screen,"",&lv_font_montserrat_14,UI_TEXT_DIM,LV_TEXT_ALIGN_LEFT);
     lv_obj_add_flag(s_val_level,LV_OBJ_FLAG_HIDDEN);lv_obj_add_flag(s_val_best,LV_OBJ_FLAG_HIDDEN);
-    s_hint_lbl=ui_pixel_footer(s_screen,"确定开始","长按：下键直落 / 确定返回",&buddy_font_16);
-    s_controls=mk_label(s_screen,"上左 · 下右\n确定旋转",&buddy_font_16,UI_TEXT,LV_TEXT_ALIGN_CENTER);
+    s_hint_lbl=ui_pixel_footer(s_screen,"確定開始","長按：下鍵直落 / 確定返回",&buddy_font_16);
+    s_controls=mk_label(s_screen,"上左 · 下右\n確定旋轉",&buddy_font_16,UI_TEXT,LV_TEXT_ALIGN_CENTER);
     lv_obj_set_width(s_controls,s_field_w-8);lv_obj_set_pos(s_controls,16,115);
     lv_obj_set_style_bg_color(s_controls,lv_color_hex(UI_BG),0);lv_obj_set_style_bg_opa(s_controls,LV_OPA_COVER,0);
     lv_obj_set_style_pad_ver(s_controls,10,0);lv_obj_set_style_text_line_space(s_controls,6,0);
@@ -418,7 +418,7 @@ void build_ui() {
         ? LV_BORDER_SIDE_FULL
         : static_cast<lv_border_side_t>(LV_BORDER_SIDE_TOP | LV_BORDER_SIDE_BOTTOM), 0);
     lv_obj_set_style_border_color(s_dead_panel, lv_color_hex(UI_BORDER), 0);
-    lv_obj_t *t = mk_label(s_dead_panel, "游戏结束", &buddy_font_16, UI_TEXT, LV_TEXT_ALIGN_CENTER);
+    lv_obj_t *t = mk_label(s_dead_panel, "遊戲結束", &buddy_font_16, UI_TEXT, LV_TEXT_ALIGN_CENTER);
     lv_obj_set_width(t, 186);
     lv_obj_set_pos(t, 3, 12);
     s_dead_info = mk_label(s_dead_panel, "", &lv_font_montserrat_20, UI_SKY_DARK, LV_TEXT_ALIGN_CENTER);
@@ -434,7 +434,7 @@ void build_ui() {
     lv_label_set_text(s_val_best, text);
     enter_ready();
 
-    ESP_LOGI(kTag, "棋盘就绪 cell=%d (%dx%d); free=%u largest=%u", s_cell, s_field_w,
+    ESP_LOGI(kTag, "棋盤就緒 cell=%d (%dx%d); free=%u largest=%u", s_cell, s_field_w,
              s_field_h, (unsigned)esp_get_free_heap_size(),
              (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL));
 }
@@ -522,7 +522,7 @@ static void tetris_on_key(uint8_t btn, app_btn_event_t event, uint16_t mv) {
                 render_all();
                 render_next();
                 sync_labels();
-                if (s_hint_lbl) lv_label_set_text(s_hint_lbl, "上左 下右 确定旋转");
+                if (s_hint_lbl) lv_label_set_text(s_hint_lbl, "上左 下右 確定旋轉");
             }
             break;
         case TC_PLAYING:
@@ -548,9 +548,9 @@ static void tetris_on_key(uint8_t btn, app_btn_event_t event, uint16_t mv) {
 
 const passport_app_t g_tetris_app = {
     .id = APP_ID_TETRIS,
-    .name = "俄罗斯方块",
+    .name = "俄羅斯方塊",
     .en_name = "TETRIS",
-    .desc = "移动、旋转与消行\n挑战你的最高纪录",
+    .desc = "移動、旋轉與消行\n挑戰你的最高紀錄",
     .tag = "GAME",
     .theme_color = 0x181B1C,
     .init = tetris_init,

@@ -38,7 +38,7 @@ lv_timer_t *s_volume_timer = nullptr;
 lv_timer_t *s_status_timer = nullptr;
 ui_pixel_battery_t s_battery{};
 lv_obj_t *s_wifi_bars[3]{};
-const char *s_default_hint = "确定说话 · 上下音量";
+const char *s_default_hint = "確定說話 · 上下音量";
 
 // 文本内容也只在持锁时读写，避免与 lv_label 生命周期脱节。
 std::string s_user_text;
@@ -198,7 +198,7 @@ void ui_init() {
     lv_obj_set_style_text_color(s_status_label, lv_color_hex(kTextMain), 0);
     lv_label_set_long_mode(s_status_label, LV_LABEL_LONG_MODE_DOTS);
     lv_obj_set_size(s_status_label, 196, 20);
-    lv_label_set_text(s_status_label, "准备中...");
+    lv_label_set_text(s_status_label, "準備中...");
     lv_obj_align(s_status_label, LV_ALIGN_LEFT_MID, 15, 0);
 
     // Keep the conversation open and reserve the shared two-line key footer.
@@ -235,7 +235,7 @@ void ui_init() {
     lv_obj_set_style_text_color(s_ai_text_label, lv_color_hex(kTextMain), 0);
     lv_label_set_long_mode(s_ai_text_label, LV_LABEL_LONG_WRAP);
     lv_obj_set_style_text_align(s_ai_text_label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_label_set_text(s_ai_text_label, "确定开始说话\n再按确定结束");
+    lv_label_set_text(s_ai_text_label, "確定開始說話\n再按確定結束");
 
     s_companion = lv_obj_create(s_screen);
     lv_obj_remove_style_all(s_companion);
@@ -245,8 +245,8 @@ void ui_init() {
     lv_obj_add_event_cb(s_companion, draw_companion, LV_EVENT_DRAW_MAIN, nullptr);
     show_companion(true);
 
-    s_default_hint = "确定说话 · 上下音量";
-    s_hint_label = ui_pixel_footer(s_screen, s_default_hint, "长按确定返回", &buddy_font_16);
+    s_default_hint = "確定說話 · 上下音量";
+    s_hint_label = ui_pixel_footer(s_screen, s_default_hint, "長按確定返回", &buddy_font_16);
     s_status_timer = lv_timer_create([](lv_timer_t *) {
         if (s_screen && app_registry_screen_is_on()) refresh_status_bar();
     }, 5000, nullptr);
@@ -297,9 +297,9 @@ void ui_set_state(State state) {
     if (!begin_update(200)) return;
     s_face_state = state;
     if (s_companion) lv_obj_invalidate(s_companion);
-    s_default_hint = state == State::Listening ? "确定结束 · 上下音量" :
+    s_default_hint = state == State::Listening ? "確定結束 · 上下音量" :
                      state == State::Speaking || state == State::Thinking ?
-                     "确定打断 · 上下音量" : "确定说话 · 上下音量";
+                     "確定打斷 · 上下音量" : "確定說話 · 上下音量";
     ui_pixel_label_set_text(s_hint_label, s_default_hint);
     ui_pixel_text_color(s_status_label,
         state == State::Error || state == State::Disconnected ? UI_DANGER :
@@ -309,22 +309,22 @@ void ui_set_state(State state) {
     case State::Disconnected:
         lv_obj_set_style_bg_color(s_status_badge, lv_color_hex(kRedAccent), 0);
         if (!WifiManager::GetInstance().IsConnected()) {
-            lv_label_set_text(s_status_label, "Wi-Fi 未连接，请配网");
+            lv_label_set_text(s_status_label, "Wi-Fi 未連線，請連網設定");
         } else {
-            lv_label_set_text(s_status_label, "未连接 · 确定重试");
+            lv_label_set_text(s_status_label, "未連線 · 確定重試");
         }
         break;
     case State::Connecting:
         lv_obj_set_style_bg_color(s_status_badge, lv_color_hex(kAmberAccent), 0);
-        lv_label_set_text(s_status_label, "正在连接小智");
+        lv_label_set_text(s_status_label, "正在連線小智");
         break;
     case State::Idle:
         lv_obj_set_style_bg_color(s_status_badge, lv_color_hex(kGreenAccent), 0);
-        lv_label_set_text(s_status_label, "准备就绪");
+        lv_label_set_text(s_status_label, "準備就緒");
         break;
     case State::Listening:
         lv_obj_set_style_bg_color(s_status_badge, lv_color_hex(kUserBlue), 0);
-        lv_label_set_text(s_status_label, "正在聆听");
+        lv_label_set_text(s_status_label, "正在聆聽");
         break;
     case State::Thinking:
         lv_obj_set_style_bg_color(s_status_badge, lv_color_hex(kAmberAccent), 0);
@@ -332,11 +332,11 @@ void ui_set_state(State state) {
         break;
     case State::Speaking:
         lv_obj_set_style_bg_color(s_status_badge, lv_color_hex(kGreenAccent), 0);
-        lv_label_set_text(s_status_label, "正在回复");
+        lv_label_set_text(s_status_label, "正在回覆");
         break;
     case State::Error:
         lv_obj_set_style_bg_color(s_status_badge, lv_color_hex(kRedAccent), 0);
-        lv_label_set_text(s_status_label, "服务异常 · 确定重试");
+        lv_label_set_text(s_status_label, "服務異常 · 確定重試");
         break;
     }
 
@@ -353,7 +353,7 @@ void ui_set_user_text(const std::string &text) {
     if (!begin_update(200)) return;
     conversation_layout();
     lv_obj_remove_flag(s_user_text_label, LV_OBJ_FLAG_HIDDEN);
-    s_user_text = "你说: ";
+    s_user_text = "你說: ";
     passport::append_utf8_tail(s_user_text, passport::fold_display_text(text), kMaxTextBytes);
     lv_label_set_text(s_user_text_label, s_user_text.c_str());
     scroll_to_bottom_locked();

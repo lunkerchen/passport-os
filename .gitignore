@@ -22,6 +22,13 @@ all_chars.txt
 ui_chars.txt
 .impeccable/
 
+# Local configuration, credentials and operating-system files
+.DS_Store
+.setup/
+.env
+.env.*
+!.env.example
+
 # Generated firmware and local validation artifacts
 *.uf2
 *.hex

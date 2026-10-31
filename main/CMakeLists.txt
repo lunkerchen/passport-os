@@ -47,6 +47,7 @@ idf_component_register(
         "apps/voice/app_state.c"
         "apps/voice/time_sync.c"
         "ui/ui_pixel.c"
+        "ui/zh_tw_display.c"
         "ui/ui_capture.c"
         "apps/voice/ui_pixel_math.c"
         "apps/voice/mode.c"
@@ -113,6 +114,7 @@ idf_component_register(
         lwip
 )
 target_link_options(${COMPONENT_LIB} INTERFACE
+    "-Wl,--wrap=lv_label_set_text,--wrap=lv_label_set_text_static"
     "-Wl,--undefined=__wrap_opus_encoder_create,--undefined=__wrap_opus_encoder_destroy"
     "-Wl,--wrap=opus_encoder_create,--wrap=opus_encoder_destroy")
 

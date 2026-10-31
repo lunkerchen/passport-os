@@ -73,7 +73,7 @@ struct Playlist {
             // First release only admits explicitly audio-only AAC/MP3 variants.
             const char *bw = std::strstr(s, "BANDWIDTH=");
             bandwidth = bw ? unsigned(std::strtoul(bw + 10, nullptr, 10)) : 0;
-            pending_variant = bandwidth > 0 && bandwidth <= 192000 &&
+            pending_variant = bandwidth > 0 && bandwidth <= 384000 &&
                 !std::strstr(s, "RESOLUTION=") && !std::strstr(s, "avc") &&
                 !std::strstr(s, "hvc") && !std::strstr(s, "hev") &&
                 !std::strstr(s, "av01") && !std::strstr(s, "vp09") &&

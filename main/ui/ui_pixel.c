@@ -82,10 +82,10 @@ uint32_t ui_theme_portrait_subject_color(uint8_t level)
 const char *ui_theme_name(ui_theme_t theme)
 {
     switch (theme) {
-        case UI_THEME_TRAVEL: return "旅行仪器";
-        case UI_THEME_PLAYFUL: return "像素白";
+        case UI_THEME_TRAVEL: return "旅行儀器";
+        case UI_THEME_PLAYFUL: return "畫素白";
         case UI_THEME_NEON: return "霓虹黑";
-        default: return "经典绿";
+        default: return "經典綠";
     }
 }
 

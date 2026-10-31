@@ -137,9 +137,9 @@ uint8_t *s_portrait_packed = nullptr;
 esp_err_t read_portrait(bool present) {
     if (!present) return ESP_FAIL;
     if (!s_portrait_packed)
-        s_portrait_packed = static_cast<uint8_t *>(malloc(HOME_AVATAR_BYTES));
+        s_portrait_packed = static_cast<uint8_t *>(malloc(HOME_AVATAR_MAX_BYTES));
     if (!s_portrait_packed) return ESP_ERR_NO_MEM;
-    return home_profile_read_avatar(s_portrait_packed, HOME_AVATAR_BYTES);
+    return home_profile_read_avatar(s_portrait_packed, HOME_AVATAR_MAX_BYTES);
 }
 // 显示用 A8 展开:LVGL 软渲染 A8 快速路径(alpha 蒙版 + recolor 磷光绿纯色)。
 // 2026-09-13 改为堆分配(home_start 申请 / home_stop 归还):14.4KB 常驻 .bss
@@ -203,6 +203,10 @@ bool s_weather_fetching = false;
 void expand_portrait(void) {
     if (!s_portrait_pixels || !s_portrait_packed) return;
     lv_image_cache_drop(&s_portrait_dsc);
+    if (home_portrait_is_color(s_portrait_packed)) {
+        memcpy(s_portrait_pixels, s_portrait_packed + HOME_PORTRAIT_HEADER_BYTES, HOME_PORTRAIT_I8_BYTES);
+        return;
+    }
     if (s_portrait_packed[4] == 0) {
         // Preserve LVGL's original RGB565 alpha blending, including its rounding.
         for (size_t pixel = 0; pixel < HOME_PORTRAIT_PIXELS; ++pixel)
@@ -221,8 +225,9 @@ void expand_portrait(void) {
 // 无头像时显示占位文字(磷光风格不用彩色吉祥物)。
 void apply_avatar(bool have_image) {
     have_image = have_image && s_portrait_packed;
-    const bool legacy = have_image && s_portrait_packed[4] == 0;
-    const size_t bytes = legacy ? HOME_PORTRAIT_PIXELS : HOME_PORTRAIT_I4_BYTES;
+    const bool color = have_image && home_portrait_is_color(s_portrait_packed);
+    const bool legacy = have_image && !color && s_portrait_packed[4] == 0;
+    const size_t bytes = color ? HOME_PORTRAIT_I8_BYTES : legacy ? HOME_PORTRAIT_PIXELS : HOME_PORTRAIT_I4_BYTES;
     if (have_image && s_portrait_pixels && s_portrait_dsc.data_size != bytes) {
         lv_image_set_src(s_avatar_img, nullptr);
         lv_image_cache_drop(&s_portrait_dsc);
@@ -235,8 +240,8 @@ void apply_avatar(bool have_image) {
         if (!s_portrait_pixels) ESP_LOGW(kTag, "portrait buffer unavailable; using placeholder");
     }
     if (have_image && s_portrait_pixels != nullptr) {
-        s_portrait_dsc.header.cf = legacy ? LV_COLOR_FORMAT_A8 : LV_COLOR_FORMAT_I4;
-        s_portrait_dsc.header.stride = legacy ? HOME_PORTRAIT_W : HOME_PORTRAIT_W / 2;
+        s_portrait_dsc.header.cf = color ? LV_COLOR_FORMAT_I8 : legacy ? LV_COLOR_FORMAT_A8 : LV_COLOR_FORMAT_I4;
+        s_portrait_dsc.header.stride = (color || legacy) ? HOME_PORTRAIT_W : HOME_PORTRAIT_W / 2;
         s_portrait_dsc.data_size = bytes;
         lv_obj_set_style_image_recolor(s_avatar_img, lv_color_hex(ui_theme_portrait_color(3)), 0);
         expand_portrait();
@@ -471,7 +476,7 @@ void update_clock_labels() {
         std::snprintf(date_buf, sizeof(date_buf), "%s %s", ymd, week);
     } else {
         // 未校时一律显示占位符。时间只能来自 SNTP 或 PC 校时,设备自己没有可信来源。
-        std::snprintf(date_buf, sizeof(date_buf), "等待校时");
+        std::snprintf(date_buf, sizeof(date_buf), "等待校時");
     }
 
     const char digits[4] = {hh[0], hh[1], mm[0], mm[1]};
@@ -518,11 +523,11 @@ void update_weather_labels(const home_profile_t *prof) {
     home_air_quality_label(WifiManager::GetInstance().IsConnected(), pm_line, sizeof(pm_line));
     if (s_lbl_stat) lv_label_set_text(s_lbl_stat, pm_line);
     if (prof->lat[0] == '\0') {
-        lv_label_set_text(s_lbl_city, "未设城市");
+        lv_label_set_text(s_lbl_city, "未設城市");
         lv_label_set_text(s_lbl_wtext, "");
         lv_label_set_text(s_lbl_temp, "--");
-        if (s_lbl_humidity) lv_label_set_text(s_lbl_humidity, "湿度 --");
-        if (s_lbl_feels) lv_label_set_text(s_lbl_feels, "体感 --");
+        if (s_lbl_humidity) lv_label_set_text(s_lbl_humidity, "溼度 --");
+        if (s_lbl_feels) lv_label_set_text(s_lbl_feels, "體感 --");
         return;
     }
     home_weather_t w;
@@ -535,7 +540,7 @@ void update_weather_labels(const home_profile_t *prof) {
         lv_label_set_text(s_lbl_temp, t);
 
         char h[20];
-        std::snprintf(h, sizeof(h), "湿度 %u%%", (unsigned)w.humidity);
+        std::snprintf(h, sizeof(h), "溼度 %u%%", (unsigned)w.humidity);
         if (s_lbl_humidity) lv_label_set_text(s_lbl_humidity, h);
 
         int feels = static_cast<int>(w.temp_c);
@@ -545,14 +550,14 @@ void update_weather_labels(const home_profile_t *prof) {
             feels -= (w.wind_kmh - 15) / 10;
         }
         char f[20];
-        std::snprintf(f, sizeof(f), "体感 %d°", feels);
+        std::snprintf(f, sizeof(f), "體感 %d°", feels);
         if (s_lbl_feels) lv_label_set_text(s_lbl_feels, f);
 
     } else {
-        lv_label_set_text(s_lbl_wtext, s_weather_fetching ? "更新" : "暂无");
+        lv_label_set_text(s_lbl_wtext, s_weather_fetching ? "更新" : "暫無");
         lv_label_set_text(s_lbl_temp, "--");
-        if (s_lbl_humidity) lv_label_set_text(s_lbl_humidity, "湿度 --");
-        if (s_lbl_feels) lv_label_set_text(s_lbl_feels, "体感 --");
+        if (s_lbl_humidity) lv_label_set_text(s_lbl_humidity, "溼度 --");
+        if (s_lbl_feels) lv_label_set_text(s_lbl_feels, "體感 --");
     }
 }
 
@@ -578,13 +583,13 @@ void update_wind_line() {
             if (unknown_age) std::snprintf(line, sizeof(line), "%s", age);
             else std::snprintf(line, sizeof(line), "%s更新", age);
         } else {
-            std::snprintf(line, sizeof(line), "%s %d级",
+            std::snprintf(line, sizeof(line), "%s %d級",
                           home_weather_wind_dir_text(w.wind_dir),
                           home_weather_beaufort(w.wind_kmh));
         }
         ui_pixel_label_set_text(s_lbl_wind, line);
     } else {
-        ui_pixel_label_set_text(s_lbl_wind, "风向 --");
+        ui_pixel_label_set_text(s_lbl_wind, "風向 --");
     }
 }
 
@@ -606,25 +611,25 @@ void update_footer_label() {
     }
 
     if (s_detail_mode == 1) {
-        footer_set("长按上换图 · 长按下设置", &buddy_font_16, kPhosDim);
+        footer_set("長按上換圖 · 長按下設定", &buddy_font_16, kPhosDim);
         return;
     }
     if (s_detail_mode == 2) {
         if (!WifiManager::GetInstance().IsConnected()) {
-            footer_set("未连接无线网络", &buddy_font_16, kPhos);
+            footer_set("未連線無線網路", &buddy_font_16, kPhos);
             return;
         }
         home_weather_t w;
         const bool ok = home_weather_get(&w);
         const std::string ip = WifiManager::GetInstance().GetIpAddress();
         char line[48];
-        char age[24] = "暂无天气";
+        char age[24] = "暫無天氣";
         if (ok && w.valid) {
             home_weather_age_text(w.updated_at,
                                   home_clock_valid() ? static_cast<int64_t>(std::time(nullptr)) : 0,
                                   age, sizeof(age));
         }
-        std::snprintf(line, sizeof(line), "%s · 确定刷新", age);
+        std::snprintf(line, sizeof(line), "%s · 確定重新整理", age);
         footer_set(line, &buddy_font_16, kPhos);
         return;
     }
@@ -636,7 +641,7 @@ void update_footer_label() {
                           (unsigned)(air.pm25_x10 / 10), (unsigned)(air.pm25_x10 % 10));
             footer_set(line, &lv_font_montserrat_14, kPhos);
         } else {
-            footer_set("PM2.5 暂无数据", &buddy_font_16, kPhos);
+            footer_set("PM2.5 暫無資料", &buddy_font_16, kPhos);
         }
         return;
     }
@@ -644,12 +649,12 @@ void update_footer_label() {
         footer_set("Open-Meteo/CAMS 估算", &buddy_font_16, kPhos);
         return;
     }
-    footer_set("上名片 · 下详情 · 确定应用", &buddy_font_16, kPhosDim);
+    footer_set("上名片 · 下詳情 · 確定應用", &buddy_font_16, kPhosDim);
 }
 
 void apply_profile(const home_profile_t *prof) {
-    lv_label_set_text(s_lbl_name, prof->name[0] ? prof->name : "未设置姓名");
-    lv_label_set_text(s_lbl_sig, prof->signature[0] ? prof->signature : "未设置签名");
+    lv_label_set_text(s_lbl_name, prof->name[0] ? prof->name : "未設定姓名");
+    lv_label_set_text(s_lbl_sig, prof->signature[0] ? prof->signature : "未設定簽名");
     refresh_weather_ui();
 }
 
@@ -694,7 +699,7 @@ void create_ui() {
     ui_pixel_wifi_bars_create(s_screen, 12, 18, s_wifi_bars);
     s_batt = ui_pixel_battery_create(s_screen, 206, 6, kPhos, &lv_font_montserrat_14);
 
-    lv_obj_t *passport = ui_pixel_label(s_screen, "PASSPORT", &lv_font_montserrat_14, kPhosDim);
+    lv_obj_t *passport = ui_pixel_label(s_screen, "AI 護照", &buddy_font_16, kPhosDim);
     lv_obj_set_pos(passport, 42, 4);
 
     lv_obj_add_event_cb(s_screen, draw_passport_details, LV_EVENT_DRAW_MAIN, nullptr);
@@ -715,7 +720,7 @@ void create_ui() {
     s_portrait_ph = make_label(zone, &buddy_font_16, kPhosDim, LV_TEXT_ALIGN_CENTER);
     lv_obj_set_width(s_portrait_ph, 92);
     lv_obj_align(s_portrait_ph, LV_ALIGN_CENTER, 0, 0);
-    lv_label_set_text(s_portrait_ph, "头像未设置");
+    lv_label_set_text(s_portrait_ph, "頭像未設定");
 
     s_lbl_name = make_label(s_screen, &buddy_font_16, kPhos, LV_TEXT_ALIGN_LEFT);
     lv_obj_set_style_text_letter_space(s_lbl_name, UI_LS_BODY, 0);
@@ -727,8 +732,8 @@ void create_ui() {
     lv_obj_set_size(s_lbl_sig, 90, 20);
     lv_label_set_long_mode(s_lbl_sig, LV_LABEL_LONG_MODE_DOTS);
     lv_obj_set_pos(s_lbl_sig, 14, 204);
-    lv_label_set_text(s_lbl_name, "未设置姓名");
-    lv_label_set_text(s_lbl_sig, "未设置签名");
+    lv_label_set_text(s_lbl_name, "未設定姓名");
+    lv_label_set_text(s_lbl_sig, "未設定簽名");
 
     // ---- 右上时钟区 (x114..234, y26..124): 点阵时钟 + 日期 + 城市 (舒适呼吸间距) ----
     static const int slot_x[5] = {118, 145, 173, 180, 207};
@@ -790,9 +795,9 @@ void create_ui() {
 
     lv_label_set_text(s_lbl_temp, "--");
     lv_label_set_text(s_lbl_wtext, "");
-    lv_label_set_text(s_lbl_humidity, "湿度 --");
+    lv_label_set_text(s_lbl_humidity, "溼度 --");
     lv_label_set_text(s_lbl_stat, "PM2.5 --");
-    ui_pixel_label_set_text(s_lbl_wind, "风向 --");
+    ui_pixel_label_set_text(s_lbl_wind, "風向 --");
 
     // ---- 底部艺术底图 (y240..320):A8 alpha 图 + 磷光绿 recolor,全宽出血 ----
     s_band_img = lv_image_create(s_screen);
@@ -808,7 +813,7 @@ void create_ui() {
     lv_obj_set_width(s_lbl_footer, kContentW);
     lv_obj_align(s_lbl_footer, LV_ALIGN_BOTTOM_MID, 0, -6);
     lv_label_set_long_mode(s_lbl_footer, LV_LABEL_LONG_MODE_DOTS);
-    lv_label_set_text(s_lbl_footer, "上名片 · 下详情 · 确定应用");
+    lv_label_set_text(s_lbl_footer, "上名片 · 下詳情 · 確定應用");
 }
 
 constexpr uint16_t kJpegMcuHeight = 16;
@@ -1314,9 +1319,9 @@ void home_on_key(uint8_t btn, app_btn_event_t event, uint16_t mv) {
             if (now - s_manual_weather_ms >= 30000 && WifiManager::GetInstance().IsConnected()) {
                 s_manual_weather_ms = now;
                 s_force_weather.store(true);
-                footer_set("正在更新天气", &buddy_font_16, kPhos);
+                footer_set("正在更新天氣", &buddy_font_16, kPhos);
             } else {
-                footer_set("请稍后再试", &buddy_font_16, kPhos);
+                footer_set("請稍後再試", &buddy_font_16, kPhos);
             }
             bsp_lvgl_unlock();
             return;
@@ -1349,10 +1354,10 @@ void home_on_key(uint8_t btn, app_btn_event_t event, uint16_t mv) {
 
 const passport_app_t g_home_app = {
     .id = APP_ID_HOME,
-    .name = "首页",
+    .name = "首頁",
     .en_name = "HOME",
-    .desc = "时钟 · 天气 · 名片 · 上传",
-    .tag = "直连",
+    .desc = "時鐘 · 天氣 · 名片 · 上傳",
+    .tag = "直連",
     .theme_color = 0xDDB36C,
     .init = home_init,
     .start = home_start,

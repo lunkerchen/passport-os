@@ -30,6 +30,16 @@ int main() {
     p.reset(0, true);
     feed(p, "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=32000,CODECS=\"avc1.42,mp4a.40.2\"\nvideo.m3u8\n#EXT-X-STREAM-INF:BANDWIDTH=128000,CODECS=\"mp4a.40.2\"\nhigh.m3u8\n#EXT-X-STREAM-INF:BANDWIDTH=64000,CODECS=\"mp4a.40.2\"\n//cdn.test/low.m3u8\n");
     assert(p.complete() && !std::strcmp(p.variant, "https://cdn.test/low.m3u8"));
+    // Taipei Broadcasting's audio-only variant is approximately 323 kbit/s.
+    p.reset(0, true);
+    feed(p, "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=322689,CODECS=\"mp4a.40.2\"\nchunklist.m3u8\n");
+    assert(p.complete() && !std::strcmp(p.variant, "https://radio.test/live/chunklist.m3u8"));
+    p.reset(0, true);
+    feed(p, "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=384001,CODECS=\"mp4a.40.2\"\ntoo-high.m3u8\n");
+    assert(!p.complete());
+    p.reset(0, true);
+    feed(p, "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=322689,RESOLUTION=640x360,CODECS=\"avc1.42,mp4a.40.2\"\nvideo.m3u8\n");
+    assert(!p.complete());
     for (const auto &tag : {"#EXT-X-KEY:METHOD=AES-128,URI=\"key\"", "#EXT-X-MAP:URI=\"init.mp4\"", "#EXT-X-BYTERANGE:100@0", "#EXT-X-GAP", "#EXT-X-MEDIA-SEQUENCE:-1", "#EXT-X-TARGETDURATION:0"}) {
         p.reset(0, true); feed(p, std::string("#EXTM3U\n") + tag + "\n#EXTINF:6,\na.ts\n"); assert(!p.complete());
     }

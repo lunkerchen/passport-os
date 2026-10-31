@@ -43,7 +43,7 @@ static void mic_task(void *arg) {
 
     esp_err_t err = bsp_audio_init();
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "bsp_audio_init 失败: %s", esp_err_to_name(err));
+        ESP_LOGE(TAG, "bsp_audio_init 失敗: %s", esp_err_to_name(err));
         atomic_store(&s_active, false);
         s_task = NULL;
         atomic_store(&s_running, false);
@@ -110,7 +110,7 @@ void game_mic_start(void) {
     if (s_task) {
         atomic_store(&s_active, false);
         if (!wait_task_exit(40)) { /* 最多 600ms */
-            ESP_LOGW(TAG, "旧采音任务未退出,放弃本次启动");
+            ESP_LOGW(TAG, "舊採音任務未退出,放棄本次啟動");
             return;
         }
     }

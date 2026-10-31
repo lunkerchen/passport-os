@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const html=fs.readFileSync('main/apps/home/phone_setup.html','utf8');
 const algorithm=html.slice(html.indexOf('function portraitLocalContrast('),html.indexOf('async function imageFile('));
-const elements={portraitBackground:{checked:false},portraitBrightness:{value:'0'},portraitPresetDot:{},portraitPresetFlat:{},portraitPresetHybrid:{}};
+const elements={portraitBackground:{checked:false},portraitBrightness:{value:'0'},portraitPresetColor:{},portraitPresetDot:{},portraitPresetFlat:{},portraitPresetHybrid:{}};
 const context=vm.createContext({$:id=>elements[id],PORTRAIT:{w:96,h:138},portrait:null,portraitPreset:3,portraitPreparedCache:null,portraitPalette:[0,1,2,255],portraitSubjectPalette:[30,90,170,255],fixture:null});
 vm.runInContext(algorithm,context);
 function rgba(values){return Uint8ClampedArray.from(values.flatMap(v=>[v,v,v,255]))}
@@ -41,5 +41,20 @@ for(const preset of [1,2,3]){
 assert.notDeepEqual(variants[0],variants[1]);
 assert.notDeepEqual(variants[1].subarray(8),variants[2].subarray(8),'hybrid changes actual pixels');
 assert.deepEqual(variants[1].subarray(8+3312),variants[2].subarray(8+3312),'presets share one silhouette');
-context.setPortraitPreset(999);assert.equal(elements.portraitPresetHybrid.checked,true);
+context.setPortraitPreset(999);assert.equal(elements.portraitPresetColor.checked,true);
+const colorData=Uint8ClampedArray.from(Array.from({length:96*138},(_,i)=>i%3===0?[255,0,0,255]:i%3===1?[0,255,0,255]:[0,0,255,255]).flat());
+colorData[3]=0;context.fixture=colorData;context.portraitPreparedCache=null;
+const color=context.portraitPacked();
+assert.equal(color.length,14280);assert.deepEqual(Array.from(color.slice(0,8)),[80,67,51,56,4,0,0,0]);
+assert.equal(color[1032],0);assert.equal(context.portraitColor(color,0),0);
+assert.equal(context.portraitColor(color,1),0x00ff00);assert.equal(context.portraitColor(color,2),0x0000ff);assert.equal(context.portraitColor(color,3),0xff0000);
+assert.deepEqual(Array.from(context.portraitPacked()),Array.from(color));
+const gradient=Uint8ClampedArray.from(Array.from({length:96*138},(_,i)=>[i%256,(i*7)%256,(i*11)%256,255]).flat());
+const reduced=context.portraitColorPacked(gradient,96,138,false,0);
+assert.ok(new Set(reduced.slice(1032)).size<=255);
+assert.ok(Array.from(reduced.slice(1032)).every(i=>i>0));
+for(let i=1;i<256;i++)assert.equal(reduced[8+i*4+3],255);
+const empty=context.portraitColorPacked(new Uint8ClampedArray(96*138*4),96,138,false,0);
+assert.ok(Array.from(empty.slice(1032)).every(i=>i===0));
+console.log('Color portrait: RGB retention, transparency, deterministic packing, 255-color bound and empty image: PASS');
 console.log('Portrait presets: three distinct renders, masks, dark foreground, brightness, header and packing: PASS');

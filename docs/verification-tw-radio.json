@@ -1,0 +1,88 @@
+{
+  "version": "0.2.0-rc.56-tw-radio",
+  "base_version": "0.2.0-rc.56",
+  "hardware": "FoloToy AI Passport / ESP32-C3 / 8 MB Flash",
+  "deployed_image": {
+    "bytes": 4100576,
+    "sha256": "fa05ec028eed501a184a8bdae750fdef8d3fd86a2627ad0ed7bedd242a03484a",
+    "flash_offset": "0x10000"
+  },
+  "checks": {
+    "public_firmware_build": "PASS",
+    "partition_table_unchanged": true,
+    "flash_readback_hash": "PASS",
+    "sram_budget": "PASS",
+    "font_and_glyph_map_reproduction": "PASS",
+    "targeted_host_tests": {
+      "python3 tests/test_zh_tw_display.py": "PASS",
+      "node tests/test_portrait_pixels.js": "PASS",
+      "python3 tests/test_color_portrait_storage.py": "PASS",
+      "python3 tests/test_avatar_upload.py": "PASS",
+      "python3 tests/test_home_portrait_lifecycle.py": "PASS",
+      "python3 tests/test_radio_source.py": "PASS"
+    },
+    "hls_high_bitrate_audio_and_video_rejection": "PASS",
+    "color_portrait_rgb_swatch_capture": "PASS",
+    "portrait_and_profile_preservation": true,
+    "radio_pcm_output": {
+      "臺北健康電臺": {
+        "status": "decoded on ESP32",
+        "sample_rate": 44100,
+        "channels": 2
+      },
+      "臺北廣播電臺": {
+        "status": "decoded on ESP32",
+        "sample_rate": 44100,
+        "channels": 2
+      },
+      "警廣臺北臺": {
+        "status": "decoded on ESP32",
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      "警廣全國網": {
+        "status": "decoded on ESP32",
+        "sample_rate": 48000,
+        "channels": 2
+      },
+      "ICRT": {
+        "status": "decoded on ESP32",
+        "sample_rate": 24000,
+        "channels": 1
+      },
+      "中廣新聞網": {
+        "status": "decoded on ESP32",
+        "sample_rate": 22050,
+        "channels": 2
+      },
+      "中廣流行網": {
+        "status": "decoded on ESP32",
+        "sample_rate": 22050,
+        "channels": 2
+      },
+      "中廣音樂網": {
+        "status": "decoded on ESP32",
+        "sample_rate": 22050,
+        "channels": 2
+      },
+      "九八新聞台": {
+        "status": "decoded on ESP32",
+        "sample_rate": 24000,
+        "channels": 1
+      },
+      "飛碟電台": {
+        "status": "decoded on ESP32",
+        "sample_rate": 24000,
+        "channels": 1
+      }
+    },
+    "runtime_faults": []
+  },
+  "screenshot": "images/taipei-radio.png",
+  "limitations": [
+    "Radio verification confirms decoding and PCM output, not a human listening assessment.",
+    "Only the documented CJK subset is included; arbitrary Unicode coverage is not guaranteed.",
+    "The upstream full host suite is blocked by pre-existing macOS Clang C++ linkage diagnostics and Linux linker options; only targeted checks are claimed as passing.",
+    "Stream availability depends on the broadcasters and network."
+  ]
+}

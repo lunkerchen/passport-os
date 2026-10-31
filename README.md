@@ -1,3 +1,5 @@
+> **繁中臺北版：`0.2.0-rc.56-tw-radio`** — 本 fork 加入繁體中文介面、彩色首頁頭像與 10 個臺北／北部固定電臺。使用與建置方式請見 [繁體中文說明](README.zh-TW.md)。以下保留原作者的專案介紹。
+
 <div align="center">
 
 # Passport OS

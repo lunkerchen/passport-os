@@ -257,7 +257,7 @@ esp_err_t audio_streamer_init(void) {
     TaskHandle_t audio_h = xTaskCreateStatic(audio_worker, "audio_worker", 3072, NULL, 6,
                                              s_audio_stack, &s_audio_tcb);
     if (!audio_h) {
-        ESP_LOGE(TAG, "audio worker 创建失败");
+        ESP_LOGE(TAG, "audio worker 建立失敗");
         vSemaphoreDelete(sem);
         vSemaphoreDelete(exit_sem);
         vSemaphoreDelete(empty_sem);
@@ -271,7 +271,7 @@ esp_err_t audio_streamer_init(void) {
     TaskHandle_t ble_h = xTaskCreateStatic(ble_worker, "ble_worker", 4096, NULL, 5,
                                            s_ble_stack, &s_ble_tcb);
     if (!ble_h) {
-        ESP_LOGE(TAG, "ble worker 创建失败,回滚 audio worker");
+        ESP_LOGE(TAG, "ble worker 建立失敗,回滾 audio worker");
         vTaskDelete(audio_h);   // audio worker 阻塞等待中,删除安全(无持有资源)
         s_audio_task = NULL;
         vSemaphoreDelete(sem);
@@ -283,7 +283,7 @@ esp_err_t audio_streamer_init(void) {
     }
     s_ble_task = ble_h;
     s_ready = true;   // 全部资源就绪:此后公开 API 才可访问 ring/sem/worker
-    ESP_LOGI(TAG, "流式管线就绪(静态环 %d B / %d 槽,块 %d B)",
+    ESP_LOGI(TAG, "流式管線就緒(靜態環 %d B / %d 槽,塊 %d B)",
              RING_BYTES, RING_SLOTS, CHUNK_BYTES);
     return ESP_OK;
 }
@@ -330,7 +330,7 @@ esp_err_t audio_streamer_start(void) {
     // ADPCM 自适应复位由 ble_worker 消费(token 变化检测,不在本任务碰编码
     // 状态):新会话首块前复位,不携带上一会话的静音/噪声自适应。
     xSemaphoreGive(s_sem);
-    ESP_LOGI(TAG, "采集开始 (%s, 会话 %u)", s_compressed ? "ADPCM 4:1" : "PCM",
+    ESP_LOGI(TAG, "採集開始 (%s, 會話 %u)", s_compressed ? "ADPCM 4:1" : "PCM",
              (unsigned)s_session_token);
     return ESP_OK;
 }
@@ -342,11 +342,11 @@ void audio_streamer_stop(void) {
     // 避免 SEND 提示音与采集尾部重叠写码片。
     wait_worker_exit(WORKER_EXIT_TIMEOUT_MS);
     if (s_audio_task) {   // 首会话后即达深路径;真机据 HWM 再缩栈(见 init 注释)
-        ESP_LOGI(TAG, "栈余量: audio %u/3072, ble %u/4096",
+        ESP_LOGI(TAG, "棧餘量: audio %u/3072, ble %u/4096",
                  (unsigned)uxTaskGetStackHighWaterMark(s_audio_task),
                  (unsigned)uxTaskGetStackHighWaterMark(s_ble_task));
     }
-    ESP_LOGI(TAG, "采集停止");
+    ESP_LOGI(TAG, "採集停止");
 }
 
 void audio_streamer_cancel(void) {
@@ -361,7 +361,7 @@ void audio_streamer_cancel(void) {
     s_session_token++;
     s_active = false;
     wait_worker_exit(WORKER_EXIT_TIMEOUT_MS);
-    ESP_LOGI(TAG, "采集取消(残留由 token 失效丢弃)");
+    ESP_LOGI(TAG, "採集取消(殘留由 token 失效丟棄)");
 }
 
 bool audio_streamer_active(void) { return s_active; }
@@ -391,7 +391,7 @@ void audio_streamer_drain(uint32_t ms) {
     // ——voice.end 帧序由调用方保证(drain 后发 end),残帧在飞时 end 仍会发,
     // status 对账帧兜底。
     if (!wait_ring_empty(ms)) {
-        ESP_LOGW(TAG, "drain 超时,可能仍有残帧在飞");
+        ESP_LOGW(TAG, "drain 超時,可能仍有殘幀在飛");
     }
 }
 
@@ -408,7 +408,7 @@ static void audio_worker(void *arg) {
             // +4:item 头留给 token;整体 4B 对齐,DMA 目标(+4)仍在 4B 边界
             esp_err_t e = bsp_audio_read(s_chunk + 4, CHUNK_BYTES);
             if (e != ESP_OK) {
-                ESP_LOGE(TAG, "bsp_audio_read 失败 (%s),停流",
+                ESP_LOGE(TAG, "bsp_audio_read 失敗 (%s),停流",
                          esp_err_to_name(e));
                 app_event_t ev = { .type = APP_EV_AUDIO_ERROR };  // 语义独立的硬件错误事件
                 app_event_post(&ev);
@@ -461,7 +461,7 @@ static void ble_worker(void *arg) {
         if (len != CHUNK_ITEM_BYTES) {
             // 不该发生(NOSPLIT 保证 item 完整);真出现就丢这一块并留证,
             // 绝不按定长解读缓冲(旧 BYTEBUF 路径正是这样越界读的)。
-            ESP_LOGW(TAG, "环块长度异常 %u(期望 %d),丢弃",
+            ESP_LOGW(TAG, "環塊長度異常 %u(期望 %d),丟棄",
                      (unsigned)len, CHUNK_ITEM_BYTES);
             rc = -1;
         } else if (*(const uint32_t *)item != s_session_token) {
@@ -484,7 +484,7 @@ static void ble_worker(void *arg) {
             size_t n = adpcm_encode_block(&s_adpcm, (const int16_t *)(item + 4),
                                           CHUNK_BYTES / 2, block, sizeof(block));
             if (n == 0) {   // 参数/容量不符(编译期常量,理论不可达):丢块留证
-                ESP_LOGW(TAG, "ADPCM 编码失败(块 %u B),丢弃", (unsigned)len);
+                ESP_LOGW(TAG, "ADPCM 編碼失敗(塊 %u B),丟棄", (unsigned)len);
                 rc = -1;
             } else {
                 // 未注册通道视为发送失败(与旧语义一致)
@@ -516,7 +516,7 @@ static void ble_worker(void *arg) {
             s_fail_log_n++;
             if (s_fail_log_at == 0 ||   // 首次失败立即打(之后按 1s 窗口聚合)
                 xTaskGetTickCount() - s_fail_log_at >= pdMS_TO_TICKS(1000)) {
-                ESP_LOGW(TAG, "音频帧发送失败,丢弃(%u 帧/窗口)", s_fail_log_n);
+                ESP_LOGW(TAG, "音訊幀傳送失敗,丟棄(%u 幀/視窗)", s_fail_log_n);
                 s_fail_log_n = 0;
                 s_fail_log_at = xTaskGetTickCount();
             }

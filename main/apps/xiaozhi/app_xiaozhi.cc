@@ -198,7 +198,7 @@ void on_state_changed(State st) {
                 s_audio_recovery_required = true;
                 s_conversation_active = false;
                 proto().Stop();
-                s_retry_reason = "音频启动失败，自动重试";
+                s_retry_reason = "音訊啟動失敗，自動重試";
                 schedule_reconnect(kReconnectDelayMs);
             }
         }
@@ -312,7 +312,7 @@ void do_connect() {
 
     if (!WifiManager::GetInstance().IsConnected()) {
         xiaozhi::ui_set_state(State::Disconnected);
-        xiaozhi::ui_set_status_text("网络断开");
+        xiaozhi::ui_set_status_text("網路斷開");
         s_next_connect_attempt_ms = now_ms() + kWifiRetryMs;
         return;
     }
@@ -338,10 +338,10 @@ void do_connect() {
     //    它才会返回 websocket{url,token,version}，或者在设备未绑定时返回
     //    activation{code,message} 要求用户先绑定。
     if (cfg_stale) {
-        xiaozhi::ui_set_status_text("正在准备连接");
+        xiaozhi::ui_set_status_text("正在準備連線");
         xiaozhi::OtaOutcome ota;
         if (!fetch_ota_config(&ota)) {
-            s_retry_reason = "无法连接服务器";
+            s_retry_reason = "無法連線伺服器";
             xiaozhi::ui_set_status_text(s_retry_reason);
             schedule_reconnect(kReconnectDelayMs);
             return;
@@ -354,17 +354,17 @@ void do_connect() {
                 ESP_LOGW(TAG, "Activation required, code=%s", s_activation_code.c_str());
                 // 验证码必须在消息区完整可见(状态胶囊太窄会截断),并给出
                 // 普通用户的真实绑定路径——MAC 直绑是开发者后门,用户没有。
-                xiaozhi::ui_set_status_text("待激活 " + s_activation_code);
+                xiaozhi::ui_set_status_text("待啟用 " + s_activation_code);
                 xiaozhi::ui_set_ai_text(
-                    "设备尚未绑定。手机打开 xiaozhi.me，登录后「添加设备」，"
-                    "输入验证码 " + s_activation_code +
-                    "。绑定后约 30 秒内自动连接。");
-                xiaozhi::ui_set_hint("绑定后将自动连接");
+                    "裝置尚未繫結。手機開啟 xiaozhi.me，登入後「新增裝置」，"
+                    "輸入驗證碼 " + s_activation_code +
+                    "。繫結後約 30 秒內自動連線。");
+                xiaozhi::ui_set_hint("繫結後將自動連線");
             } else {
                 ESP_LOGW(TAG, "Activation required (no code returned)");
-                xiaozhi::ui_set_status_text("等待绑定设备");
+                xiaozhi::ui_set_status_text("等待繫結裝置");
                 xiaozhi::ui_set_ai_text(ota.activation_message.empty()
-                                            ? "设备尚未激活，请打开 xiaozhi.me 添加本设备。"
+                                            ? "裝置尚未啟用，請開啟 xiaozhi.me 新增本裝置。"
                                             : ota.activation_message);
             }
             s_next_connect_attempt_ms = now_ms() + kActivationRepollMs;
@@ -415,7 +415,7 @@ void do_connect() {
     if (!s_audio_ready) {
         if (xiaozhi::AudioService::GetInstance().Init() != ESP_OK) {
             ESP_LOGE(TAG, "Audio init failed; Xiaozhi stays unusable");
-            s_retry_reason = "音频启动失败，自动重试";
+            s_retry_reason = "音訊啟動失敗，自動重試";
             xiaozhi::ui_set_status_text(s_retry_reason);
             schedule_reconnect(kReconnectDelayMs);
             return;
@@ -423,9 +423,9 @@ void do_connect() {
         s_audio_ready = true;
     }
 
-    xiaozhi::ui_set_status_text("正在连接小智");
+    xiaozhi::ui_set_status_text("正在連線小智");
     if (!proto().Start(url, token, version)) {
-        s_retry_reason = "无法连接服务器";
+        s_retry_reason = "無法連線伺服器";
         xiaozhi::ui_set_status_text(s_retry_reason);
         s_connect_failures++;
         schedule_reconnect(kReconnectDelayMs);
@@ -441,7 +441,7 @@ void do_start_listen() {
         return;
     }
     if (!s_session_ready || !proto().HandshakeDone()) {
-        xiaozhi::ui_set_status_text("连接准备中，请稍候");
+        xiaozhi::ui_set_status_text("連線準備中，請稍候");
         return;
     }
     // 用协议层的实时状态判断，而不是本任务缓存的 s_cur_state（后者可能滞后一个循环）
@@ -451,7 +451,7 @@ void do_start_listen() {
     xiaozhi::ui_clear_text();
 
     if (!proto().TriggerStartListen()) {
-        xiaozhi::ui_set_status_text("发送失败，请重试");
+        xiaozhi::ui_set_status_text("傳送失敗，請重試");
         return;
     }
     s_conversation_active = true;
@@ -466,7 +466,7 @@ void do_start_listen() {
         s_audio_recovery_required = true;
         proto().TriggerAbort();
         proto().Stop();
-        s_retry_reason = "麦克风启动失败，自动重试";
+        s_retry_reason = "麥克風啟動失敗，自動重試";
         xiaozhi::ui_set_status_text(s_retry_reason);
         schedule_reconnect(kReconnectDelayMs);
     }
@@ -576,7 +576,7 @@ void handle_proto_event(const Event &ev) {
         s_connect_pending = true;
         s_connect_started_ms = now_ms();
         ESP_LOGI(TAG, "Socket connected, waiting for server hello...");
-        xiaozhi::ui_set_status_text("正在建立连接");
+        xiaozhi::ui_set_status_text("正在建立連線");
         break;
 
     case EvType::HelloOk:
@@ -592,7 +592,7 @@ void handle_proto_event(const Event &ev) {
             ESP_LOGE(TAG, "Server hello succeeded but post-hello audio reservation failed");
             s_session_ready = false;
             s_audio_recovery_required = true;
-            s_retry_reason = "音频内存不足，自动重试";
+            s_retry_reason = "音訊記憶體不足，自動重試";
             s_conversation_active = false;
             proto().Stop();
             schedule_reconnect(kReconnectDelayMs);
@@ -602,7 +602,7 @@ void handle_proto_event(const Event &ev) {
         s_session_ready = true;
         s_reconnect_delay_ms = kReconnectDelayMs;
         s_retry_reason.clear();
-        xiaozhi::ui_set_status_text("准备就绪");
+        xiaozhi::ui_set_status_text("準備就緒");
         if (s_listen_after_connect) {
             s_listen_after_connect = false;
             do_start_listen();
@@ -614,7 +614,7 @@ void handle_proto_event(const Event &ev) {
         break;
 
     case EvType::Disconnected:
-        s_retry_reason = "网络断开";
+        s_retry_reason = "網路斷開";
         xiaozhi::ui_set_status_text(s_retry_reason);
         if (s_connect_pending) s_connect_failures++;
         s_connect_pending = false;
@@ -643,7 +643,7 @@ void handle_proto_event(const Event &ev) {
         if (!xiaozhi::AudioService::GetInstance().ReleaseSessionResources()) {
             s_audio_recovery_required = true;
         }
-        s_retry_reason = "无法连接服务器";
+        s_retry_reason = "無法連線伺服器";
         xiaozhi::ui_set_status_text(s_retry_reason);
         schedule_reconnect(kReconnectDelayMs);
         break;
@@ -716,7 +716,7 @@ void tick() {
         s_connect_pending = false;
         s_connect_failures++;
         proto().Stop();
-        s_retry_reason = "服务器无响应";
+        s_retry_reason = "伺服器無響應";
         xiaozhi::ui_set_status_text(s_retry_reason);
         schedule_reconnect(kReconnectDelayMs);
     }
@@ -727,7 +727,7 @@ void tick() {
         s_conversation_active = false;
         xiaozhi::AudioService::GetInstance().StopRecording();
         proto().TriggerAbort();
-        xiaozhi::ui_set_ai_text("录音已停止，请按确定再说一次。");
+        xiaozhi::ui_set_ai_text("錄音已停止，請按確定再說一次。");
     }
 
     // 3. 思考态无响应 → 主动 abort，避免 UI 永久卡在"思考中"按 OK 没反应
@@ -737,7 +737,7 @@ void tick() {
         s_thinking_since_ms = 0;
         s_conversation_active = false;
         proto().TriggerAbort();
-        xiaozhi::ui_set_ai_text("超时未收到回复，请再说一次。");
+        xiaozhi::ui_set_ai_text("超時未收到回覆，請再說一次。");
     }
 
     // Continuous stories/music may last arbitrarily long. Only lack of both
@@ -879,8 +879,8 @@ void xiaozhi_app_start(void) {
         s_start_failed = true;
         xiaozhi::ui_init();
         xiaozhi::ui_show();
-        xiaozhi::ui_set_status_text("启动失败，请重试");
-        xiaozhi::ui_set_ai_text("内存暂时不足。确定重试，或长按确定返回。");
+        xiaozhi::ui_set_status_text("啟動失敗，請重試");
+        xiaozhi::ui_set_ai_text("記憶體暫時不足。確定重試，或長按確定返回。");
         return;
     }
 
@@ -915,8 +915,8 @@ void xiaozhi_app_start(void) {
         s_start_failed = true;
         xiaozhi::ui_init();
         xiaozhi::ui_show();
-        xiaozhi::ui_set_status_text("启动失败，请重试");
-        xiaozhi::ui_set_ai_text("内存暂时不足。确定重试，或长按确定返回。");
+        xiaozhi::ui_set_status_text("啟動失敗，請重試");
+        xiaozhi::ui_set_ai_text("記憶體暫時不足。確定重試，或長按確定返回。");
         return;
     }
 }
@@ -978,8 +978,8 @@ const passport_app_t g_xiaozhi_app = {
     .id = APP_ID_XIAOZHI,
     .name = "小智 AI",
     .en_name = "XIAOZHI",
-    .desc = "与小智连续语音对话\n联网使用，自动断句",
-    .tag = "直连",
+    .desc = "與小智連續語音對話\n聯網使用，自動斷句",
+    .tag = "直連",
     .theme_color = 0x38BDF8,
     .init = xiaozhi_app_init,
     .start = xiaozhi_app_start,

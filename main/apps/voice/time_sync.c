@@ -66,7 +66,7 @@ esp_err_t time_sync_set_tz_offset_min(int minutes)
 {
     if (minutes < TZ_MIN_MINUTES || minutes > TZ_MAX_MINUTES) return ESP_ERR_INVALID_ARG;
     if (minutes == s_tz_min) return ESP_OK;   // 每次天气刷新都会调,不重复写 flash
-    ESP_LOGI(TAG, "时区自动更新 %+d -> %+d 分钟", s_tz_min, minutes);
+    ESP_LOGI(TAG, "時區自動更新 %+d -> %+d 分鐘", s_tz_min, minutes);
     s_tz_min = minutes;
     return nvs_settings_set_tz_min((int16_t)minutes);
 }
@@ -74,7 +74,7 @@ esp_err_t time_sync_set_tz_offset_min(int minutes)
 esp_err_t time_sync_set_tz(int hour)
 {
     if (hour < -TZ_MAX_HOUR || hour > TZ_MAX_HOUR) {
-        ESP_LOGW(TAG, "时区偏移越界 %d(±%d)", hour, TZ_MAX_HOUR);
+        ESP_LOGW(TAG, "時區偏移越界 %d(±%d)", hour, TZ_MAX_HOUR);
         return ESP_ERR_INVALID_ARG;
     }
     s_tz_min = hour * 60;

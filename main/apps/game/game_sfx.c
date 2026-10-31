@@ -68,7 +68,7 @@ static void play_seg(uint16_t hz, uint16_t ms) {
         if (!write_blocking(buf, (size_t)n * sizeof(int16_t))) {
             if (!s_muted) {
                 s_muted = true;  /* 等满 600ms 仍写不进去——只报一次,别刷屏 */
-                ESP_LOGW(TAG, "codec 输出未就绪(等 %dms),本局关闭音效", SFX_READY_WAIT_MS);
+                ESP_LOGW(TAG, "codec 輸出未就緒(等 %dms),本局關閉音效", SFX_READY_WAIT_MS);
             }
             return;
         }
@@ -106,7 +106,7 @@ void game_sfx_start(void) {
     /* 优先级 5(高于 LVGL 4):提示音只有几十毫秒,且 I2S 写阻塞时会让出 CPU,
        不会拖慢渲染;低于它会让音效明显滞后于画面。 */
     if (xTaskCreate(sfx_task, "game_sfx", 2048, NULL, 5, &s_task) != pdPASS) {
-        ESP_LOGW(TAG, "音效任务创建失败,本局无音效");
+        ESP_LOGW(TAG, "音效任務建立失敗,本局無音效");
         s_task = NULL;
         atomic_store(&s_running, false);
     }

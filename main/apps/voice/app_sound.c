@@ -41,7 +41,7 @@ static void play_segment(uint16_t hz, uint16_t ms) {
             if (++phase >= period) phase = 0;
         }
         if (bsp_audio_write(buf, (size_t)n * sizeof(int16_t)) != ESP_OK) {
-            ESP_LOGE(TAG, "bsp_audio_write 失败");
+            ESP_LOGE(TAG, "bsp_audio_write 失敗");
             return;
         }
         total -= n;
@@ -81,12 +81,12 @@ static void sound_worker(void *arg) {
 esp_err_t app_sound_init(void) {
     esp_err_t e = bsp_audio_init();
     if (e != ESP_OK) {
-        ESP_LOGE(TAG, "bsp_audio_init 失败: %s", esp_err_to_name(e));
+        ESP_LOGE(TAG, "bsp_audio_init 失敗: %s", esp_err_to_name(e));
         return e;
     }
     e = bsp_audio_set_format(SAMPLE_RATE, 16, 1);
     if (e != ESP_OK) {
-        ESP_LOGE(TAG, "bsp_audio_set_format 失败: %s", esp_err_to_name(e));
+        ESP_LOGE(TAG, "bsp_audio_set_format 失敗: %s", esp_err_to_name(e));
         return e;
     }
     bsp_audio_set_volume(80);
@@ -106,16 +106,16 @@ esp_err_t app_sound_init(void) {
     // 阻塞 I2S 写(等 DMA 时让出 CPU),不会饿死同级/低级任务;且它与采集不重叠。
     if (!xTaskCreateStatic(sound_worker, "sound_worker", 2048, NULL, 5,
                            s_snd_stack, &s_snd_tcb)) {
-        ESP_LOGE(TAG, "sound worker 创建失败");
+        ESP_LOGE(TAG, "sound worker 建立失敗");
         return ESP_FAIL;
     }
-    ESP_LOGI(TAG, "提示音就绪");
+    ESP_LOGI(TAG, "提示音就緒");
     return ESP_OK;
 }
 
 bool app_sound_play(app_tone_t tone) {
     if (xQueueSend(s_queue, &tone, 0) != pdTRUE) {
-        ESP_LOGW(TAG, "提示音队列满,丢弃 %d", (int)tone);
+        ESP_LOGW(TAG, "提示音佇列滿,丟棄 %d", (int)tone);
         return false;
     }
     return true;

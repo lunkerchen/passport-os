@@ -1,4 +1,6 @@
-[简体中文](../README.md) · **English**
+[简体中文](../README.md) · [繁體中文 fork guide](../README.zh-TW.md) · **English**
+
+> This fork adds Traditional Chinese UI and fonts, 255-color home portraits, and ten fixed Taipei/Taiwan radio presets. Version: `0.2.0-rc.56-tw-radio`. The [fork guide](../README.zh-TW.md) covers building, flashing, font generation, tests, and device verification. The original project introduction follows.
 
 # Passport OS
 

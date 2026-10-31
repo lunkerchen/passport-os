@@ -260,7 +260,7 @@ void show_clean_launch_notice(passport_app_id_t id) {
         lv_obj_set_style_bg_opa(screen, LV_OPA_COVER, 0);
         lv_obj_remove_flag(screen, LV_OBJ_FLAG_SCROLLABLE);
         char text[64];
-        snprintf(text, sizeof(text), "正在整理内存\n马上打开 %s", app ? app->name : "应用");
+        snprintf(text, sizeof(text), "正在整理記憶體\n馬上開啟 %s", app ? app->name : "應用");
         lv_obj_t *label = ui_pixel_label(screen, text, &buddy_font_16, UI_TEXT);
         lv_obj_set_width(label, 216);
         lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);

@@ -11,6 +11,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "lvgl.h"
+#include "fonts/app_fonts.h"
 
 #include <stdbool.h>
 
@@ -69,10 +70,10 @@ void boot_splash_run(void) {
 
     // 副标题
     lv_obj_t *sub = lv_label_create(s_splash);
-    lv_obj_set_style_text_font(sub, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_font(sub, &buddy_font_16, 0);
     lv_obj_set_style_text_color(sub, lv_color_hex(C_PHOSDIM), 0);
     lv_obj_set_style_text_letter_space(sub, 1, 0);
-    lv_label_set_text(sub, "TRAVEL INSTRUMENT");
+    lv_label_set_text(sub, "隨身智慧工具");
     lv_obj_align(sub, LV_ALIGN_CENTER, 0, 4);
 
     // Measure the actual title rather than assuming a 150 px width. A mask
