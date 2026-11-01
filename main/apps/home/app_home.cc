@@ -898,6 +898,25 @@ int share_jpeg_output(JDEC *decoder, void *bitmap, JRECT *rectangle) {
 }
 
 bool home_show_share_image() {
+    // LVGL and the JPEG path share one SPI device, which is not safe for
+    // concurrent access. Keep LVGL out until the last JPEG transfer drains.
+    struct DisplayGuard {
+        bool locked = bsp_lvgl_lock(2000);
+        ~DisplayGuard() { if (locked) bsp_lvgl_unlock(); }
+    } display_guard;
+    if (!display_guard.locked) {
+        ESP_LOGW(kTag, "Cannot acquire display for wallet card");
+        return false;
+    }
+
+    // Disabling invalidation does not complete a previously queued LVGL DMA.
+    // Drain it before any direct transfer, while the LVGL task is excluded.
+    const auto io = bsp_display_io();
+    if (!io || esp_lcd_panel_io_tx_param(io, 0x00, nullptr, 0) != ESP_OK) {
+        ESP_LOGW(kTag, "Cannot drain display before wallet card");
+        return false;
+    }
+
     char path[HOME_SHARE_PATH_MAX];
     if (!home_profile_share_path_at(s_share_index, path, sizeof(path))) return false;
     FILE *fp = std::fopen(path, "rb");
